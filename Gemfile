@@ -22,6 +22,7 @@ gem 'omniauth-github'
 gem 'omniauth-rails_csrf_protection'
 gem 'dotenv-rails', groups: [:development, :test]
 gem 'octokit'
+gem "enumerize"
 gem 'faraday-retry'
 
 
@@ -38,4 +39,5 @@ end
 group :test do
   gem "capybara"
   gem "selenium-webdriver"
+  gem "minitest-power_assert"
 end

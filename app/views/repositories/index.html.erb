@@ -1,0 +1,32 @@
+<div class="container py-5">
+  <h1 class="mb-4">Репозитории</h1>
+
+  <div class="mb-3">
+    <%= link_to "Добавить репозиторий", new_repository_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if @repositories.any? %>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Github ID</th>
+          <th>Имя</th>
+          <th>Полное имя</th>
+          <th>Язык</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @repositories.each do |repository| %>
+          <tr>
+            <td><%= repository.github_id %></td>
+            <td><%= repository.name %></td>
+            <td><%= repository.full_name %></td>
+            <td><%= repository.language %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p>Пока нет сохранённых репозиториев.</p>
+  <% end %>
+</div>
