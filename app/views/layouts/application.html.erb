@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html class="h-100">
   <head>
-    <title><%= content_for(:title) || "Rails Project 66" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><%= content_for?(:title) ? yield(:title) : "Hexlet Github Quality" %></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="keywords" content="template language">
+    <meta name="author" content="author">
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -13,11 +16,86 @@
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
+
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <%= yield %>
+  <body class="d-flex flex-column h-100">
+    <div class="container mb-2">
+      <div class="d-flex flex-wrap align-items-center py-2 border-bottom">
+        <div class="navbar navbar-expand-md navbar-light me-auto">
+          <%= link_to root_path, class: "navbar-brand me-md-4" do %>
+            Hexlet Github Quality
+          <% end %>
+
+          <button class="navbar-toggler" type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#navbarToggler"
+                  aria-controls="navbarToggler"
+                  aria-expanded="false"
+                  aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+
+          <div class="collapse navbar-collapse" id="navbarToggler">
+            <ul class="nav nav-pills flex-grow-1 navbar-nav me-auto">
+              <li class="nav-item me-2">
+                <%= link_to "Главная", root_path, class: "nav-link text-dark" %>
+              </li>
+              <li class="nav-item me-2">
+                <%= link_to "Репозитории", "/repositories", class: "nav-link text-dark" %>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <ul class="nav nav-pills">
+          <% if session[:user_id] && (current_user = User.find_by(id: session[:user_id])) %>
+            <li class="nav-item">
+              <span class="nav-link text-secondary d-flex align-items-center">
+                <% if current_user.image_url.present? %>
+                  <%= image_tag current_user.image_url,
+                                alt: current_user.nickname || current_user.email,
+                                class: "rounded-circle me-2",
+                                width: 24,
+                                height: 24 %>
+                <% end %>
+                <%= current_user.name.presence || current_user.email %>
+              </span>
+            </li>
+            <li class="nav-item">
+              <%= button_to "Выйти",
+                            logout_path,
+                            method: :delete,
+                            data: { turbo: false },
+                            class: "nav-link link-dark",
+                            form: { class: "button_to m-0" } %>
+            </li>
+          <% else %>
+            <li class="nav-item">
+              <%= button_to "Войти через GitHub",
+                            "/auth/github",
+                            method: :post,
+                            data: { turbo: false },
+                            class: "nav-link link-dark",
+                            form: { class: "button_to m-0" } %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+
+    <main>
+      <%= yield %>
+    </main>
+
+    <footer class="bg-dark text-light mt-auto">
+      <div class="container-xl">
+        <div class="row py-2">
+          © Hexlet Ltd, 2025
+        </div>
+      </div>
+    </footer>
   </body>
 </html>

@@ -16,7 +16,14 @@ gem "sentry-ruby"
 gem "sentry-rails"
 gem "redis", ">= 4.0.1"
 gem "image_processing", "~> 1.2"
-gem 'dotenv-rails'
+gem 'rollbar'
+gem 'omniauth'
+gem 'omniauth-github'
+gem 'omniauth-rails_csrf_protection'
+gem 'dotenv-rails', groups: [:development, :test]
+gem 'octokit'
+gem 'faraday-retry'
+
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
