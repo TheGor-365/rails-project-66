@@ -1,72 +1,154 @@
 # frozen_string_literal: true
 
-require "open3"
-require "fileutils"
-require "securerandom"
-require "json"
+require 'open3'
+require 'fileutils'
+require 'json'
+require 'securerandom'
 
 class CodeChecker
-  Result = Struct.new(:output, :offenses_count, :exit_status, :commit_id, keyword_init: true) do
+  RUBY       = 'Ruby'
+  JAVASCRIPT = 'JavaScript'
+
+  # Контракт, под который заточена Repository::Check:
+  # - offenses_count
+  # - success?
+  Result = Struct.new(
+    :commit_id,
+    :output,
+    :offenses_count,
+    :success,
+    keyword_init: true
+  ) do
     def success?
-      exit_status.zero?
+      !!success
     end
   end
 
-  class << self
-    # Запуск проверки репозитория Rubocop
-    # Возвращает Result
-    def run(repository:, commit_id: nil)
-      repo_path = clone_repository(repository)
+  # Публичный интерфейс для контейнера:
+  # ApplicationContainer[:code_checker].run(repository:, commit_id:)
+  def self.run(repository:, commit_id: nil)
+    new(repository:, commit_id:).run
+  end
 
-      resolved_commit_id = current_commit_id(repo_path)
+  def initialize(repository:, commit_id: nil)
+    @repository = repository
+    @commit_id  = commit_id
+  end
 
-      stdout, status = Open3.popen3(rubocop_command(repo_path)) do |_stdin, stdout, _stderr, wait_thr|
-        [stdout.read, wait_thr.value.exitstatus]
-      end
+  def run
+    repo_path = clone_repository
 
-      Result.new(
-        output: stdout,
-        offenses_count: parse_offenses_count(stdout),
-        exit_status: status,
-        commit_id: resolved_commit_id
-      )
-    ensure
-      FileUtils.remove_dir(repo_path) if repo_path && Dir.exist?(repo_path)
+    commit_id = current_commit_sha(repo_path)
+
+    output         = ''
+    offenses_count = 0
+    success        = false
+
+    case @repository.language.to_s
+    when RUBY
+      output, offenses_count, success = run_rubocop(repo_path)
+    when JAVASCRIPT
+      output, offenses_count, success = run_eslint(repo_path)
+    else
+      output         = "Unsupported language for check: #{@repository.language}"
+      offenses_count = 0
+      success        = false
     end
 
-    private
+    Result.new(
+      commit_id:,
+      output:,
+      offenses_count:,
+      success:
+    )
+  ensure
+    FileUtils.rm_rf(repo_path) if repo_path && Dir.exist?(repo_path)
+  end
 
-    def clone_repository(repository)
-      base_dir = Rails.root.join("tmp", "repos")
-      FileUtils.mkdir_p(base_dir)
+  private
 
-      dest_dir = base_dir.join("repository-#{repository.id}-#{SecureRandom.hex(4)}")
+  def clone_repository
+    dir = Rails.root.join('tmp', 'repos', "repo-#{@repository.id}-#{SecureRandom.hex(4)}")
+    FileUtils.mkdir_p(dir)
 
-      system!("git clone --depth 1 #{repository.clone_url} #{dest_dir}")
+    clone_url = @repository.clone_url
 
-      dest_dir
+    command = [
+      'git', 'clone',
+      '--depth', '1',
+      clone_url,
+      dir.to_s
+    ]
+
+    _stdout, stderr, status = Open3.capture3(*command, chdir: Rails.root.to_s)
+
+    raise "Failed to clone repository: #{stderr}" unless status.success?
+
+    dir
+  end
+
+  def current_commit_sha(repo_path)
+    stdout, _stderr, status = Open3.capture3(
+      'git', '-C', repo_path.to_s, 'rev-parse', 'HEAD'
+    )
+
+    status.success? ? stdout.strip : nil
+  end
+
+  def run_rubocop(repo_path)
+    config_path = Rails.root.join('.rubocop.yml')
+
+    command = [
+      'bundle', 'exec', 'rubocop',
+      '--config', config_path.to_s,
+      '--format', 'json',
+      repo_path.to_s
+    ]
+
+    stdout, _stderr, status = Open3.capture3(*command, chdir: Rails.root.to_s)
+
+    offenses_count = 0
+
+    begin
+      data = JSON.parse(stdout)
+      # rubocop summary: {"summary"=>{"offense_count"=>N, ...}}
+      summary        = data.fetch('summary', {})
+      offenses_count = summary.fetch('offense_count', 0).to_i
+    rescue JSON::ParserError
+      # stdout просто показываем как есть
     end
 
-    def current_commit_id(repo_path)
-      stdout, = Open3.capture2("git -C #{repo_path} rev-parse HEAD")
-      stdout.strip
+    success = status.success? && offenses_count.zero?
+
+    [stdout, offenses_count, success]
+  end
+
+  def run_eslint(repo_path)
+    eslint_bin  = Rails.root.join('node_modules', '.bin', 'eslint')
+    config_path = Rails.root.join('config', 'eslint', '.eslintrc.json')
+
+    command = [
+      eslint_bin.to_s,
+      '--no-eslintrc',
+      '--config', config_path.to_s,
+      '--format', 'json',
+      repo_path.to_s
+    ]
+
+    stdout, _stderr, status = Open3.capture3(*command, chdir: Rails.root.to_s)
+
+    offenses_count = 0
+
+    begin
+      data = JSON.parse(stdout)
+      # eslint => массив файлов [{ "messages": [...] }, ...]
+      offenses_count = data.sum { |file| file.fetch('messages', []).size }
+    rescue JSON::ParserError
+      # stdout оставляем как есть
     end
 
-    def rubocop_command(repo_path)
-      config_path = Rails.root.join(".rubocop.yml")
-      %(bundle exec rubocop #{repo_path} --config #{config_path} --format json)
-    end
+    success = status.success? && offenses_count.zero?
 
-    def parse_offenses_count(stdout)
-      json = JSON.parse(stdout)
-      json.dig("summary", "offense_count")
-    rescue JSON::ParserError, NoMethodError
-      nil
-    end
-
-    def system!(command)
-      success = system(command)
-      raise "Command failed: #{command}" unless success
-    end
+    [stdout, offenses_count, success]
   end
 end

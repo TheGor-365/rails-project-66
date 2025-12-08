@@ -9,7 +9,8 @@ class RepositoriesController < ApplicationController
   end
 
   def new
-    @github_repositories = GithubClient.repos(current_user.token)
+    all_repos = GithubClient.repos(current_user.token)
+    @github_repositories = all_repos.select { |repo| %w[Ruby JavaScript].include?(repo.language) }
     @repository = current_user.repositories.build
   end
 
@@ -22,18 +23,19 @@ class RepositoriesController < ApplicationController
     )
 
     @repository = current_user.repositories.build(
-      github_id: github_repo.id,
-      name: github_repo.name,
-      full_name: github_repo.full_name,
-      language: github_repo.language,
-      clone_url: github_repo.clone_url,
-      ssh_url: github_repo.ssh_url
+      github_id:  github_repo.id,
+      name:       github_repo.name,
+      full_name:  github_repo.full_name,
+      language:   github_repo.language,
+      clone_url:  github_repo.clone_url,
+      ssh_url:    github_repo.ssh_url
     )
 
     if @repository.save
       redirect_to repositories_path, notice: 'Репозиторий добавлен'
     else
-      @github_repositories = GithubClient.repos(current_user.token)
+      all_repos = GithubClient.repos(current_user.token)
+      @github_repositories = all_repos.select { |repo| %w[Ruby JavaScript].include?(repo.language) }
       render :new, status: :unprocessable_entity
     end
   end

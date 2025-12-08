@@ -6,7 +6,7 @@ class Repository < ApplicationRecord
   belongs_to :user
   has_many :checks, class_name: "Repository::Check", dependent: :destroy
 
-  enumerize :language, in: %w[Ruby], predicates: true
+  enumerize :language, in: %w[Ruby JavaScript], predicates: true
 
   validates :github_id, presence: true, uniqueness: { scope: :user_id }
   validates :name, :full_name, :clone_url, :ssh_url, presence: true
