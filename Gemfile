@@ -24,11 +24,14 @@ gem 'dotenv-rails', groups: [:development, :test]
 gem 'octokit'
 gem "enumerize"
 gem 'faraday-retry'
+gem "dry-container"
+gem "aasm"
 
 
 group :development, :test do
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"
   gem "brakeman", require: false
+  gem "rubocop", require: false
   gem "rubocop-rails-omakase", require: false
 end
 
@@ -40,4 +43,5 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "minitest-power_assert"
+  gem "webmock"
 end

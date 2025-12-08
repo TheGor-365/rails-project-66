@@ -1,0 +1,74 @@
+<div class="mt-4 mb-5 pb-5">
+  <div class="container">
+    <div class="p-4 align-items-center border shadow bg-white rounded-3">
+      <div class="mb-4">
+        <h1><%= @repository.full_name %></h1>
+      </div>
+
+      <%= button_to "Проверить",
+                    repository_checks_path(@repository),
+                    class: "btn btn-primary mb-4" %>
+
+      <p>
+        <strong class="me-2">Название</strong>
+        <%= @repository.full_name %>
+      </p>
+      <p>
+        <strong class="me-2">Язык</strong>
+        <%= @repository.language %>
+      </p>
+      <p>
+        <strong class="me-2">Дата создания</strong>
+        <%= l @repository.created_at, format: :long %>
+      </p>
+      <p>
+        <strong class="me-2">Дата обновления</strong>
+        <%= l @repository.updated_at, format: :long %>
+      </p>
+
+      <hr />
+
+      <% if @checks.present? %>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Статус</th>
+              <th scope="col">ID коммита</th>
+              <th scope="col">Проверка пройдена?</th>
+              <th scope="col">Дата создания</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @checks.each do |check| %>
+              <tr>
+                <td scope="row">
+                  <%= link_to check.id, repository_check_path(@repository, check) %>
+                </td>
+                <td scope="row"><%= check.human_status %></td>
+                <td scope="row">
+                  <% if check.commit_id.present? %>
+                    <%= link_to check.commit_id,
+                                "https://github.com/#{@repository.full_name}/commit/#{check.commit_id}",
+                                target: "_blank",
+                                rel: "noopener" %>
+                  <% end %>
+                </td>
+                <td scope="row">
+                  <% unless check.passed.nil? %>
+                    <%= check.passed %>
+                  <% end %>
+                </td>
+                <td scope="row"><%= l check.created_at, format: :short %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p class="text-muted mb-0">
+          Проверок ещё нет — запустите первую с помощью кнопки «Проверить» выше.
+        </p>
+      <% end %>
+    </div>
+  </div>
+</div>

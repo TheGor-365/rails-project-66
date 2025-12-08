@@ -1,0 +1,53 @@
+<div class="mt-4 mb-5 pb-5">
+  <div class="container">
+    <div class="p-4 align-items-center border shadow bg-white rounded-3">
+      <div class="mb-4">
+        <h1></h1>
+      </div>
+
+      <%= link_to "Перейти к репозиторию",
+                  repository_path(@repository),
+                  class: "btn btn-primary mb-4" %>
+
+      <h1>Проверка #<%= @check.id %></h1>
+
+      <table class="table">
+        <tr>
+          <td>Дата создания</td>
+          <td><%= l @check.created_at, format: :long %></td>
+        </tr>
+        <tr>
+          <td>Статус</td>
+          <td><%= @check.human_status %></td>
+        </tr>
+        <tr>
+          <td>Проверка пройдена</td>
+          <td>
+            <% unless @check.passed.nil? %>
+              <%= @check.passed %>
+            <% end %>
+          </td>
+        </tr>
+        <tr>
+          <td>Количество замечаний</td>
+          <td><%= @check.violations_count %></td>
+        </tr>
+        <tr>
+          <td>ID коммита</td>
+          <td>
+            <% if @check.commit_id.present? %>
+              <%= link_to @check.commit_id,
+                          "https://github.com/#{@repository.full_name}/commit/#{@check.commit_id}",
+                          target: "_blank",
+                          rel: "noopener" %>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+
+      <% if @check.output.present? %>
+        <pre class="mt-4"><%= @check.output %></pre>
+      <% end %>
+    </div>
+  </div>
+</div>

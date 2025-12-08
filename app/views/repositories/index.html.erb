@@ -1,32 +1,36 @@
-<div class="container py-5">
-  <h1 class="mb-4">Репозитории</h1>
+<div class="mt-4 mb-5 pb-5">
+  <div class="container">
+    <div class="p-4 align-items-center border shadow bg-white rounded-3">
+      <div class="mb-4">
+        <h1></h1>
+      </div>
 
-  <div class="mb-3">
-    <%= link_to "Добавить репозиторий", new_repository_path, class: "btn btn-primary" %>
-  </div>
+      <%= link_to "Добавить", new_repository_path, class: "btn btn-primary" %>
 
-  <% if @repositories.any? %>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Github ID</th>
-          <th>Имя</th>
-          <th>Полное имя</th>
-          <th>Язык</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @repositories.each do |repository| %>
+      <table class="table table-striped table-hover mt-4">
+        <thead>
           <tr>
-            <td><%= repository.github_id %></td>
-            <td><%= repository.name %></td>
-            <td><%= repository.full_name %></td>
-            <td><%= repository.language %></td>
+            <th scope="col">Название</th>
+            <th scope="col">Язык</th>
+            <th scope="col">Статус последней проверки</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% else %>
-    <p>Пока нет сохранённых репозиториев.</p>
-  <% end %>
+        </thead>
+        <tbody>
+          <% @repositories.each do |repository| %>
+            <tr>
+              <td><%= link_to repository.full_name, repository_path(repository) %></td>
+              <td><%= repository.language %></td>
+              <td>
+                <% if repository.last_check.present? %>
+                  <%= repository.last_check.human_status %>
+                <% else %>
+                  —
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>

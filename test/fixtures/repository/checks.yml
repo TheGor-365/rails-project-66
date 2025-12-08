@@ -1,0 +1,15 @@
+one:
+  repository: one
+  status: finished
+  commit_id: abc123
+  passed: true
+  violations_count: 0
+  output: "rubocop passed"
+
+two:
+  repository: one
+  status: failed
+  commit_id: def456
+  passed: false
+  violations_count: 5
+  output: "rubocop reported 5 offenses"
