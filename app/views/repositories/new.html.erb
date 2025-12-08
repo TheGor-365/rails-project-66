@@ -6,6 +6,15 @@
   <% end %>
 
   <%= form_with model: @repository, url: repositories_path, local: true do |form| %>
+    <% if @repository.errors.any? %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% @repository.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
     <div class="mb-3">
       <%= form.label :github_id, "Github *", class: "form-label" %>
       <%= form.select :github_id,

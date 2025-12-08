@@ -9,8 +9,7 @@ class RepositoriesController < ApplicationController
   end
 
   def new
-    all_repos = GithubClient.repos(current_user.token)
-    @github_repositories = all_repos.select { |repo| %w[Ruby JavaScript].include?(repo.language) }
+    @github_repositories = GithubClient.repos(current_user.token)
     @repository = current_user.repositories.build
   end
 
@@ -32,10 +31,23 @@ class RepositoriesController < ApplicationController
     )
 
     if @repository.save
-      redirect_to repositories_path, notice: 'Репозиторий добавлен'
+      # URL вебхука: BASE_URL + /api/checks
+      webhook_url = Rails.application.routes.url_helpers.api_checks_url
+
+      GithubClient.create_webhook(
+        access_token: current_user.token,
+        repo_full_name: @repository.full_name,
+        webhook_url: webhook_url
+      )
+
+      redirect_to repositories_path, notice: "Репозиторий добавлен"
     else
-      all_repos = GithubClient.repos(current_user.token)
-      @github_repositories = all_repos.select { |repo| %w[Ruby JavaScript].include?(repo.language) }
+      Rails.logger.error(
+        "[RepositoriesController#create] Repository not saved. " \
+        "Errors: #{@repository.errors.full_messages.inspect}"
+      )
+
+      @github_repositories = GithubClient.repos(current_user.token)
       render :new, status: :unprocessable_entity
     end
   end

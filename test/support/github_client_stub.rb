@@ -19,4 +19,10 @@ class GithubClientStub
   def self.repo(github_id:, access_token:)
     repos(access_token: access_token).find { |repo| repo.id.to_s == github_id.to_s }
   end
+
+  def self.create_webhook(access_token:, repo_full_name:, webhook_url:)
+    Rails.logger.info(
+      "GithubClientStub.create_webhook(access_token: [FILTERED], repo_full_name: #{repo_full_name}, webhook_url: #{webhook_url})"
+    )
+  end
 end
