@@ -9,11 +9,6 @@ class CodeChecker
   RUBY       = 'Ruby'
   JAVASCRIPT = 'JavaScript'
 
-  # Контракт, под который заточена Repository::Check:
-  # - commit_id
-  # - output (сырое JSON или текст)
-  # - offenses_count (общее число нарушений)
-  # - success? (true/false)
   Result = Struct.new(
     :commit_id,
     :output,
@@ -26,8 +21,6 @@ class CodeChecker
     end
   end
 
-  # Публичный интерфейс для контейнера:
-  # ApplicationContainer[:code_checker].run(repository:, commit_id:)
   def self.run(repository:, commit_id: nil)
     new(repository:, commit_id:).run
   end
@@ -69,14 +62,8 @@ class CodeChecker
 
   private
 
-  # ВАЖНО:
-  # Не клонируем в tmp/, потому что RuboCop-конфиг почти наверняка содержит:
-  #   AllCops:
-  #     Exclude:
-  #       - tmp/**/*
-  # Из-за этого все файлы в tmp/repos/... игнорируются и мы получаем 0 нарушений.
   def clone_repository
-    base_dir = Rails.root.join('repos') # вне tmp/
+    base_dir = Rails.root.join('repos')
     FileUtils.mkdir_p(base_dir)
 
     dir = base_dir.join("repo-#{@repository.id}-#{SecureRandom.hex(4)}")
@@ -125,7 +112,6 @@ class CodeChecker
       summary = data.fetch('summary', {})
       offenses_count = summary.fetch('offense_count', 0).to_i
     rescue JSON::ParserError
-      # stdout просто показываем как есть
     end
 
     success = status.success? && offenses_count.zero?
@@ -151,10 +137,8 @@ class CodeChecker
 
     begin
       data = JSON.parse(stdout)
-      # eslint => массив файлов [{ "messages": [...] }, ...]
       offenses_count = data.sum { |file| file.fetch('messages', []).size }
     rescue JSON::ParserError
-      # stdout оставляем как есть
     end
 
     success = status.success? && offenses_count.zero?
