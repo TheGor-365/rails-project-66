@@ -31,8 +31,24 @@ class Repository::Check < ApplicationRecord
     'failed'   => 'Ошибка'
   }.freeze
 
+  SHORT_SHA_LENGTH = 7
+
   def human_status
     STATUS_LABELS[status] || status
+  end
+
+  # Короткий SHA для отображения (как в школьной версии)
+  def short_commit_id
+    return if commit_id.blank?
+
+    commit_id[0, SHORT_SHA_LENGTH]
+  end
+
+  # Полный URL на коммит в GitHub c коротким SHA в пути
+  def github_commit_url
+    return if repository.blank? || repository.full_name.blank? || short_commit_id.blank?
+
+    "https://github.com/#{repository.full_name}/commit/#{short_commit_id}"
   end
 
   # Основной сценарий проверки:

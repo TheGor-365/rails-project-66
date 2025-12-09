@@ -1,8 +1,83 @@
-# Omakase Ruby styling for Rails
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+require:
+  - rubocop-rails
+  - rubocop-performance
+  - rubocop-rspec
+  - rubocop-minitest
+  - rubocop-factory_bot
+  - rubocop-capybara
+  - rubocop-packaging
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.2
+  # ВНИМАНИЕ: НЕ исключаем bin и db/schema.rb, чтобы получать те же ошибки, что и в школе
+  Exclude:
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - 'log/**/*'
+    - 'tmp/**/*'
+    - 'storage/**/*'
+
+# === Ключевые стили, которые у школы явно включены ===
+
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
+
+Bundler/OrderedGems:
+  Enabled: true
+
+Rails/OutputSafety:
+  Enabled: true
+
+Rails/FilePath:
+  Enabled: true
+
+Rails/WhereExists:
+  Enabled: true
+
+Rails/Present:
+  Enabled: true
+
+Performance/ConstantRegexp:
+  Enabled: true
+
+Style/FetchEnvVar:
+  Enabled: true
+
+Style/ExpandPathArguments:
+  Enabled: true
+
+Style/GlobalStdStream:
+  Enabled: true
+
+Style/GuardClause:
+  Enabled: true
+
+Style/RedundantSelf:
+  Enabled: true
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  EnforcedStyle: no_space
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: true
+
+# Метрики оставляем включёнными, но с адекватными лимитами
+Metrics/CyclomaticComplexity:
+  Max: 7
+
+Metrics/PerceivedComplexity:
+  Max: 8
+
+# Можно чуть смягчить, но не отключать полностью
+Metrics/MethodLength:
+  Max: 20
+
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
+    - 'db/migrate/**/*'

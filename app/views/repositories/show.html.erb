@@ -47,9 +47,9 @@
                 </td>
                 <td scope="row"><%= check.human_status %></td>
                 <td scope="row">
-                  <% if check.commit_id.present? %>
-                    <%= link_to check.commit_id,
-                                "https://github.com/#{@repository.full_name}/commit/#{check.commit_id}",
+                  <% if check.short_commit_id.present? && check.github_commit_url.present? %>
+                    <%= link_to check.short_commit_id,
+                                check.github_commit_url,
                                 target: "_blank",
                                 rel: "noopener" %>
                   <% end %>

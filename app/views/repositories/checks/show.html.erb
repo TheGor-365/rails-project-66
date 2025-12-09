@@ -35,9 +35,9 @@
         <tr>
           <td>ID коммита</td>
           <td>
-            <% if @check.commit_id.present? %>
-              <%= link_to @check.commit_id,
-                          "https://github.com/#{@repository.full_name}/commit/#{@check.commit_id}",
+            <% if @check.short_commit_id.present? && @check.github_commit_url.present? %>
+              <%= link_to @check.short_commit_id,
+                          @check.github_commit_url,
                           target: "_blank",
                           rel: "noopener" %>
             <% end %>
@@ -60,9 +60,9 @@
             <% offenses_by_file.each do |file| %>
               <tr>
                 <td colspan="3">
-                  <% if @check.commit_id.present? && file[:path].present? %>
+                  <% if @check.short_commit_id.present? && file[:path].present? %>
                     <%= link_to file[:path],
-                                "https://github.com/#{@repository.full_name}/tree/#{@check.commit_id}/#{file[:path]}",
+                                "https://github.com/#{@repository.full_name}/tree/#{@check.short_commit_id}/#{file[:path]}",
                                 target: "_blank",
                                 rel: "noopener" %>
                   <% else %>

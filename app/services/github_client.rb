@@ -1,6 +1,7 @@
+# app/services/github_client.rb
 class GithubClient
   def self.repos(access_token)
-    client(access_token).repos(per_page: 100)
+    client(access_token).repos
   end
 
   def self.repo(github_id:, access_token:)
@@ -38,6 +39,9 @@ class GithubClient
   end
 
   def self.client(access_token)
-    Octokit::Client.new(access_token: access_token)
+    Octokit::Client.new(access_token: access_token).tap do |c|
+      # важная строка — забираем **все** страницы, а не только первую
+      c.auto_paginate = true
+    end
   end
 end
