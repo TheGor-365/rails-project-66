@@ -45,7 +45,49 @@
         </tr>
       </table>
 
-      <% if @check.output.present? %>
+      <% offenses_by_file = @check.offenses_by_file %>
+
+      <% if offenses_by_file.present? %>
+        <table class="table table-hover mb-5">
+          <thead>
+            <tr>
+              <th>Сообщение</th>
+              <th>Идентификатор правила</th>
+              <th>Строка и символ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% offenses_by_file.each do |file| %>
+              <tr>
+                <td colspan="3">
+                  <% if @check.commit_id.present? && file[:path].present? %>
+                    <%= link_to file[:path],
+                                "https://github.com/#{@repository.full_name}/tree/#{@check.commit_id}/#{file[:path]}",
+                                target: "_blank",
+                                rel: "noopener" %>
+                  <% else %>
+                    <%= file[:path] %>
+                  <% end %>
+                </td>
+              </tr>
+
+              <% file[:offenses].each do |offense| %>
+                <tr>
+                  <td><%= offense[:message] %></td>
+                  <td><%= offense[:rule] %></td>
+                  <td>
+                    <% if offense[:line].present? && offense[:column].present? %>
+                      <%= "#{offense[:line]}:#{offense[:column]}" %>
+                    <% elsif offense[:line].present? %>
+                      <%= offense[:line] %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
+      <% elsif @check.output.present? %>
         <pre class="mt-4"><%= @check.output %></pre>
       <% end %>
     </div>

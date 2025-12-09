@@ -1,0 +1,13 @@
+Результат проверки репозитория <%= @repository.full_name %>
+
+Статус: <%= @check.human_status %>
+Ошибок: <%= @check.violations_count || 0 %>
+
+ID проверки: <%= @check.id %>
+ID коммита: <%= @check.commit_id.presence || "—" %>
+
+Если нужно, зайдите в систему и посмотрите подробный отчёт:
+<%= repository_check_url(@repository, @check) %>
+
+--
+Github Quality

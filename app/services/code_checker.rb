@@ -10,8 +10,10 @@ class CodeChecker
   JAVASCRIPT = 'JavaScript'
 
   # Контракт, под который заточена Repository::Check:
-  # - offenses_count
-  # - success?
+  # - commit_id
+  # - output (сырое JSON или текст)
+  # - offenses_count (общее число нарушений)
+  # - success? (true/false)
   Result = Struct.new(
     :commit_id,
     :output,
@@ -67,8 +69,17 @@ class CodeChecker
 
   private
 
+  # ВАЖНО:
+  # Не клонируем в tmp/, потому что RuboCop-конфиг почти наверняка содержит:
+  #   AllCops:
+  #     Exclude:
+  #       - tmp/**/*
+  # Из-за этого все файлы в tmp/repos/... игнорируются и мы получаем 0 нарушений.
   def clone_repository
-    dir = Rails.root.join('tmp', 'repos', "repo-#{@repository.id}-#{SecureRandom.hex(4)}")
+    base_dir = Rails.root.join('repos') # вне tmp/
+    FileUtils.mkdir_p(base_dir)
+
+    dir = base_dir.join("repo-#{@repository.id}-#{SecureRandom.hex(4)}")
     FileUtils.mkdir_p(dir)
 
     clone_url = @repository.clone_url
@@ -110,9 +121,8 @@ class CodeChecker
     offenses_count = 0
 
     begin
-      data = JSON.parse(stdout)
-      # rubocop summary: {"summary"=>{"offense_count"=>N, ...}}
-      summary        = data.fetch('summary', {})
+      data    = JSON.parse(stdout)
+      summary = data.fetch('summary', {})
       offenses_count = summary.fetch('offense_count', 0).to_i
     rescue JSON::ParserError
       # stdout просто показываем как есть
