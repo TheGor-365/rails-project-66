@@ -4,6 +4,7 @@ require 'open3'
 require 'fileutils'
 require 'json'
 require 'securerandom'
+require 'uri'
 
 class CodeChecker
   RUBY       = 'Ruby'
@@ -69,7 +70,7 @@ class CodeChecker
     dir = base_dir.join("repo-#{@repository.id}-#{SecureRandom.hex(4)}")
     FileUtils.mkdir_p(dir)
 
-    clone_url = @repository.clone_url
+    clone_url = sanitize_clone_url(@repository.clone_url)
 
     command = [
       'git', 'clone',
@@ -83,6 +84,32 @@ class CodeChecker
     raise "Failed to clone repository: #{stderr}" unless status.success?
 
     dir
+  end
+
+  def sanitize_clone_url(raw_url)
+    url = raw_url.to_s.strip
+
+    # Поддерживаем стандартные GitHub HTTPS-URL
+    if url.start_with?('https://github.com/')
+      return url
+    end
+
+    # Поддерживаем SSH-формат git@github.com:user/repo.git
+    if url.start_with?('git@github.com:')
+      return url
+    end
+
+    # На всякий случай — базовая проверка через URI (для нестандартных, но валидных https-URL)
+    begin
+      uri = URI.parse(url)
+      if %w[http https].include?(uri.scheme) && uri.host == 'github.com'
+        return url
+      end
+    rescue URI::InvalidURIError
+      # упадём чуть ниже с ArgumentError
+    end
+
+    raise ArgumentError, 'Unsupported clone URL (only GitHub HTTPS/SSH URLs are allowed)'
   end
 
   def current_commit_sha(repo_path)
