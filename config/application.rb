@@ -3,7 +3,11 @@ require_relative "boot"
 require "rails/all"
 
 Bundler.require(*Rails.groups)
-Dotenv::Rails.load
+
+begin
+  require "dotenv/rails-now"
+rescue LoadError
+end
 
 module RailsProject66
   class Application < Rails::Application
