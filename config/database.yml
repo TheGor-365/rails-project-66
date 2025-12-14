@@ -1,7 +1,9 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: 5
+  host: /var/run/postgresql
+  username: <%= ENV.fetch("PGUSER", ENV.fetch("USER", nil)) %>
 
 development:
   <<: *default
