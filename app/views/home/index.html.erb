@@ -9,13 +9,9 @@
 
     <div class="mb-3 d-flex gap-2">
       <%= link_to "Репозитории", repositories_path, class: "btn btn-primary" %>
-      <%= button_to "Выйти", logout_path, method: :delete, class: "btn btn-outline-secondary" %>
+      <%= button_to "Выйти", logout_path, method: :delete, data: { turbo: false }, class: "btn btn-outline-secondary" %>
     </div>
   <% else %>
-    <%= button_to "Войти с помощью Github",
-                  "/auth/github",
-                  method: :post,
-                  class: "btn btn-primary",
-                  form: { data: { turbo: false } } %>
+    <%= button_to "Войти с помощью Github", "/auth/github", method: :post, data: { turbo: false }, class: "btn btn-primary" %>
   <% end %>
 </div>

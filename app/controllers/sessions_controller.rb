@@ -1,8 +1,13 @@
-class SessionsController < ApplicationController
-  skip_before_action :verify_authenticity_token, only: :create
+# frozen_string_literal: true
 
+class SessionsController < ApplicationController
   def create
     auth = request.env['omniauth.auth']
+
+    unless auth
+      redirect_to root_path, alert: 'Ошибка авторизации через GitHub'
+      return
+    end
 
     user = User.find_or_initialize_by(email: auth['info']['email'])
 
@@ -21,10 +26,5 @@ class SessionsController < ApplicationController
   def destroy
     session[:user_id] = nil
     redirect_to root_path, notice: 'Вы вышли'
-  end
-
-  def failure
-    Rails.logger.warn("OmniAuth failure: message=#{params[:message].inspect} strategy=#{params[:strategy].inspect}")
-    redirect_to root_path, alert: "GitHub login failed: #{params[:message]}"
   end
 end
