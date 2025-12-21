@@ -37,25 +37,18 @@ class Repository::Check < ApplicationRecord
     STATUS_LABELS[status] || status
   end
 
-  # Короткий SHA для отображения (как в школьной версии)
   def short_commit_id
     return if commit_id.blank?
 
     commit_id[0, SHORT_SHA_LENGTH]
   end
 
-  # Полный URL на коммит в GitHub c коротким SHA в пути
   def github_commit_url
     return if repository.blank? || repository.full_name.blank? || short_commit_id.blank?
 
     "https://github.com/#{repository.full_name}/commit/#{short_commit_id}"
   end
 
-  # Основной сценарий проверки:
-  # 1. отмечаем проверку как running
-  # 2. запускаем внешний линтер через ApplicationContainer[:code_checker]
-  # 3. сохраняем результат (commit_id, output, violations_count, passed, status)
-  # 4. шлём письмо, если есть нарушения или произошла ошибка
   def perform!(commit_id: nil)
     update!(status: :running)
 
@@ -64,7 +57,6 @@ class Repository::Check < ApplicationRecord
     begin
       result = code_checker.run(repository: repository, commit_id: commit_id)
     rescue StandardError => e
-      # Линтер вообще не отработал — считаем проверку упавшей
       update!(
         status: :failed,
         passed: false,
@@ -91,7 +83,6 @@ class Repository::Check < ApplicationRecord
     self
   end
 
-  # Разобранный JSON-вывод линтера (Hash / Array или nil)
   def parsed_output
     return if output.blank?
 
@@ -100,21 +91,10 @@ class Repository::Check < ApplicationRecord
     nil
   end
 
-  # Унифицированное представление нарушений по файлам для вьюхи
-  # [
-  #   { path: "Gemfile",
-  #     offenses: [
-  #       { message: "...", rule: "Style/FrozenStringLiteralComment", line: 1, column: 1 },
-  #       ...
-  #     ]
-  #   },
-  #   ...
-  # ]
   def offenses_by_file
     data = parsed_output
     return [] if data.blank?
 
-    # Формат RuboCop: { "files": [ { "path": "...", "offenses": [...] }, ... ] }
     if data.is_a?(Hash) && data['files'].is_a?(Array)
       return data['files'].map do |file|
         path     = file['path']
@@ -131,7 +111,6 @@ class Repository::Check < ApplicationRecord
       end
     end
 
-    # Формат ESLint: [ { "filePath": "...", "messages": [...] }, ... ]
     if data.is_a?(Array)
       return data.map do |file|
         path     = file['filePath'] || file['path']
@@ -158,5 +137,9 @@ class Repository::Check < ApplicationRecord
     return unless failed
 
     CheckMailer.check_report(self).deliver_now
+  rescue StandardError => e
+    Rails.logger.error(
+      "[CheckMailer] Failed to send report for check_id=#{id}: #{e.class}: #{e.message}"
+    )
   end
 end

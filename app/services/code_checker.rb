@@ -5,6 +5,7 @@ require 'fileutils'
 require 'json'
 require 'securerandom'
 require 'uri'
+require 'pathname'
 
 class CodeChecker
   RUBY       = 'Ruby'
@@ -64,7 +65,7 @@ class CodeChecker
   private
 
   def clone_repository
-    base_dir = Rails.root.join('repos')
+    base_dir = Pathname.new(ENV.fetch("REPOS_DIR", "/tmp/repos"))
     FileUtils.mkdir_p(base_dir)
 
     dir = base_dir.join("repo-#{@repository.id}-#{SecureRandom.hex(4)}")

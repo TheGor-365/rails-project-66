@@ -31,8 +31,10 @@ class RepositoriesController < ApplicationController
     )
 
     if @repository.save
-      # URL вебхука: BASE_URL + /api/checks
-      webhook_url = Rails.application.routes.url_helpers.api_checks_url
+      webhook_url = Rails.application.routes.url_helpers.api_checks_url(
+        host: ENV.fetch("APP_HOST", "localhost"),
+        protocol: ENV.fetch("APP_PROTOCOL", "http")
+      )
 
       GithubClient.create_webhook(
         access_token: current_user.token,
