@@ -12,6 +12,10 @@
       <%= button_to "Выйти", logout_path, method: :delete, class: "btn btn-outline-secondary" %>
     </div>
   <% else %>
-    <%= button_to "Войти с помощью Github", "/auth/github", method: :post, class: "btn btn-primary" %>
+    <%= button_to "Войти с помощью Github",
+                  "/auth/github",
+                  method: :post,
+                  class: "btn btn-primary",
+                  form: { data: { turbo: false } } %>
   <% end %>
 </div>

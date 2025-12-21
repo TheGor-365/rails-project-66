@@ -22,4 +22,9 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to root_path, notice: 'Вы вышли'
   end
+
+  def failure
+    Rails.logger.warn("OmniAuth failure: message=#{params[:message].inspect} strategy=#{params[:strategy].inspect}")
+    redirect_to root_path, alert: "GitHub login failed: #{params[:message]}"
+  end
 end

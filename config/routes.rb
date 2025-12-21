@@ -3,6 +3,8 @@
 Rails.application.routes.draw do
   root "home#index"
 
+  get  "/auth/failure", to: "sessions#failure"
+
   post "/auth/github", to: "sessions#create", as: :auth_github
   get  "/auth/github/callback", to: "sessions#create", as: :auth_github_callback
   delete "/logout", to: "sessions#destroy", as: :logout
