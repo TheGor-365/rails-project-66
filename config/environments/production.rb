@@ -10,7 +10,6 @@ Rails.application.configure do
   # config.action_cable.mount_path = nil
   # config.action_cable.url = "wss://example.com/cable"
   # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
-  # config.assume_ssl = true
   # config.cache_store = :mem_cache_store
   # config.active_job.queue_adapter = :resque
   # config.active_job.queue_name_prefix = "rails_project_66_production"
@@ -21,7 +20,10 @@ Rails.application.configure do
   #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
   # ]
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+
+  config.assume_ssl = true
   config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
+
   config.assets.compile = false
   config.enable_reloading = false
   config.eager_load = true
