@@ -60,8 +60,11 @@ Rails.application.configure do
   config.active_record.attributes_for_inspect = [ :id ]
 
   # === URL options for production (Railway) ===
-  app_host = ENV.fetch("APP_HOST")
-  app_protocol = ENV.fetch("APP_PROTOCOL", "https")
+  app_host = ENV["APP_HOST"].to_s.strip
+  app_protocol = ENV["APP_PROTOCOL"].to_s.strip
+
+  app_host = "localhost" if app_host.empty?
+  app_protocol = "https" if app_protocol.empty?
 
   config.action_mailer.default_url_options = { host: app_host, protocol: app_protocol }
 
