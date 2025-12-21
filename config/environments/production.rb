@@ -1,6 +1,6 @@
-# config/environments/production.rb
+# frozen_string_literal: true
+
 require "active_support/core_ext/integer/time"
-require "ipaddr"
 
 Rails.application.configure do
   # config.require_master_key = true
@@ -22,15 +22,14 @@ Rails.application.configure do
   #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
   # ]
   # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
+  # config.assume_ssl = true
 
-  # Railway sits behind a reverse proxy (often 100.64.0.0/10). Trust it so Rails
-  # honors X-Forwarded-* headers (proto/host) and OmniAuth CSRF doesn’t break.
-  config.action_dispatch.trusted_proxies =
-    ActionDispatch::RemoteIp::TRUSTED_PROXIES + [IPAddr.new("100.64.0.0/10")]
+  # Reverse-proxy (Railway): иногда Origin/CSRF проверка видит http внутри контейнера и https снаружи,
+  # из-за чего падает OmniAuth request phase с InvalidAuthenticityToken.
+  # Точечный фикс: отключаем origin-check, оставляя сам CSRF-токен.
+  config.action_controller.forgery_protection_origin_check = false
 
-  config.assume_ssl = true
   config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
-
   config.assets.compile = false
   config.enable_reloading = false
   config.eager_load = true
