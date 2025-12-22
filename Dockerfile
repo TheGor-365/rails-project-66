@@ -11,9 +11,10 @@ FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
 # Rails app lives here
 WORKDIR /rails
 
-# Install base packages
+# Install base packages (runtime)
+# NOTE: git is required at runtime for CodeChecker (git clone)
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips sqlite3 && \
+    apt-get install --no-install-recommends -y curl git libjemalloc2 libvips sqlite3 && \
     rm -rf /var/lib/apt/lists /var/cache/apt/archives
 
 # Set production environment
@@ -45,7 +46,7 @@ RUN bundle install && \
     rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
     bundle exec bootsnap precompile --gemfile
 
-# Install node modules
+# Install node modules (needed at runtime for eslint)
 COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile
 
@@ -58,14 +59,17 @@ RUN bundle exec bootsnap precompile app/ lib/
 # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-
-RUN rm -rf node_modules
-
+# NOTE: do NOT remove node_modules — runtime needs eslint binary & plugins
+# RUN rm -rf node_modules
 
 # Final stage for app image
 FROM base
 
-# Copy built artifacts: gems, application
+# Node is required at runtime for JavaScript checks (eslint)
+COPY --from=build /usr/local/node /usr/local/node
+ENV PATH=/usr/local/node/bin:$PATH
+
+# Copy built artifacts: gems, application (includes node_modules)
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
 
