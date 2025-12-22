@@ -2,7 +2,7 @@ default: &default
   adapter: postgresql
   encoding: unicode
   pool: 5
-  host: /var/run/postgresql
+  host: <%= ENV.fetch("PGHOST", "/var/run/postgresql") %>
   username: <%= ENV.fetch("PGUSER", ENV.fetch("USER", nil)) %>
 
 development:
@@ -15,4 +15,4 @@ test:
 
 production:
   <<: *default
-  url: <%= ENV["DATABASE_URL"] %>
+  url: <%= ENV["DATABASE_URL"] %>,
