@@ -65,7 +65,8 @@ class CodeChecker
   private
 
   def clone_repository
-    base_dir = Pathname.new(ENV.fetch("REPOS_DIR", "/tmp/repos"))
+    default_dir = Rails.root.join('tmp', 'repos').to_s
+    base_dir = Pathname.new(ENV.fetch('REPOS_DIR', default_dir))
     FileUtils.mkdir_p(base_dir)
 
     dir = base_dir.join("repo-#{@repository.id}-#{SecureRandom.hex(4)}")
