@@ -31,15 +31,13 @@ Github Quality задуман как учебный pet-проект и упро
 
 ## Деплой
 
-Задеплоено на Render: **[https://<YOUR-RENDER-APP>.onrender.com](https://<YOUR-RENDER-APP>.onrender.com)**  
-
-(замени `<YOUR-RENDER-APP>` на реальное имя приложения после деплоя)
+Задеплоено на Railway: **[https://rails-project-66-production-9982.up.railway.app/](https://rails-project-66-production-9982.up.railway.app/)**  
 
 ## Локальный запуск
 
 ```bash
-git clone https://github.com/<YOUR_GITHUB_USERNAME>/<YOUR_REPO>.git
-cd <YOUR_REPO>
+git clone https://github.com/https://github.com/TheGor-365/rails-project-66.git
+cd rails-project-66
 bundle install
 bin/rails db:create db:migrate
 bin/rails server
