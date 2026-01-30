@@ -1,11 +1,26 @@
 <%
-  in_docker = File.exist?("/.dockerenv") ||
-              (ENV["CI"] && !ENV["CI"].empty?) ||
-              (ENV["DOCKER"] && !ENV["DOCKER"].empty?)
+  in_container = File.exist?("/.dockerenv") ||
+                 (ENV["DOCKER"] && !ENV["DOCKER"].empty?)
+
+  in_ci = (ENV["CI"] && !ENV["CI"].empty?)
 
   default_socket = "/var/run/postgresql"
-  default_host   = in_docker ? "postgres" : default_socket
-  default_user   = in_docker ? "postgres" : ENV["USER"]
+
+  default_host =
+    if in_container
+      "postgres"
+    elsif in_ci
+      "127.0.0.1"
+    else
+      default_socket
+    end
+
+  default_user =
+    if in_container || in_ci
+      "postgres"
+    else
+      ENV["USER"]
+    end
 %>
 
 default: &default
