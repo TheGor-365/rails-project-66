@@ -1,10 +1,20 @@
+<%
+  in_docker = File.exist?("/.dockerenv") ||
+              (ENV["CI"] && !ENV["CI"].empty?) ||
+              (ENV["DOCKER"] && !ENV["DOCKER"].empty?)
+
+  default_socket = "/var/run/postgresql"
+  default_host   = in_docker ? "postgres" : default_socket
+  default_user   = in_docker ? "postgres" : ENV["USER"]
+%>
+
 default: &default
   adapter: postgresql
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
-  host: <%= ENV.fetch("DB_HOST", ENV.fetch("PGHOST", "/var/run/postgresql")) %>
+  host: <%= ENV.fetch("DB_HOST", ENV.fetch("PGHOST", default_host)) %>
   port: <%= ENV.fetch("DB_PORT", ENV.fetch("PGPORT", 5432)) %>
-  username: <%= ENV.fetch("DB_USERNAME", ENV.fetch("PGUSER", ENV.fetch("USER", nil))) %>
+  username: <%= ENV.fetch("DB_USERNAME", ENV.fetch("PGUSER", default_user)) %>
   password: <%= ENV["DB_PASSWORD"] || ENV["PGPASSWORD"] %>
 
 development:
