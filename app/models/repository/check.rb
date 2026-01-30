@@ -25,10 +25,10 @@ class Repository::Check < ApplicationRecord
   end
 
   STATUS_LABELS = {
-    'pending'  => 'Ожидает',
-    'running'  => 'Выполняется',
-    'finished' => 'Завершена',
-    'failed'   => 'Ошибка'
+    "pending"  => "Ожидает",
+    "running"  => "Выполняется",
+    "finished" => "Завершена",
+    "failed"   => "Ошибка"
   }.freeze
 
   SHORT_SHA_LENGTH = 7
@@ -95,15 +95,15 @@ class Repository::Check < ApplicationRecord
     data = parsed_output
     return [] if data.blank?
 
-    if data.is_a?(Hash) && data['files'].is_a?(Array)
-      return data['files'].map do |file|
-        path     = file['path']
-        offenses = Array(file['offenses']).map do |offense|
+    if data.is_a?(Hash) && data["files"].is_a?(Array)
+      return data["files"].map do |file|
+        path     = file["path"]
+        offenses = Array(file["offenses"]).map do |offense|
           {
-            message: offense['message'],
-            rule:    offense['cop_name'],
-            line:    offense.dig('location', 'line'),
-            column:  offense.dig('location', 'column')
+            message: offense["message"],
+            rule:    offense["cop_name"],
+            line:    offense.dig("location", "line"),
+            column:  offense.dig("location", "column")
           }
         end
 
@@ -113,13 +113,13 @@ class Repository::Check < ApplicationRecord
 
     if data.is_a?(Array)
       return data.map do |file|
-        path     = file['filePath'] || file['path']
-        offenses = Array(file['messages']).map do |offense|
+        path     = file["filePath"] || file["path"]
+        offenses = Array(file["messages"]).map do |offense|
           {
-            message: offense['message'],
-            rule:    offense['ruleId'],
-            line:    offense['line'],
-            column:  offense['column']
+            message: offense["message"],
+            rule:    offense["ruleId"],
+            line:    offense["line"],
+            column:  offense["column"]
           }
         end
 

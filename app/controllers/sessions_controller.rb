@@ -27,7 +27,7 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to root_path, notice: "Вы вышли"
   end
-  
+
   def failure
     Rails.logger.warn(
       %(OmniAuth failure: message="#{params[:message]}" strategy="#{params[:strategy]}")

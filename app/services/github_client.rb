@@ -26,7 +26,7 @@ class GithubClient
         content_type: "json"
       },
       {
-        events: ["push"],
+        events: [ "push" ],
         active: true
       }
     )

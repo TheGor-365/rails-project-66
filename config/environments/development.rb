@@ -28,7 +28,7 @@ Rails.application.configure do
     port:      2525,
     authentication: :cram_md5
   }
-  
+
   config.active_storage.service = :local
   config.active_support.deprecation = :log
   config.active_support.disallowed_deprecation = :raise

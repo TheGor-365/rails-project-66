@@ -16,14 +16,14 @@ gem "sentry-ruby"
 gem "sentry-rails"
 gem "redis", ">= 4.0.1"
 gem "image_processing", "~> 1.2"
-gem 'rollbar'
-gem 'omniauth'
-gem 'omniauth-github'
-gem 'omniauth-rails_csrf_protection'
-gem 'dotenv-rails', groups: [:development, :test]
-gem 'octokit'
+gem "rollbar"
+gem "omniauth"
+gem "omniauth-github"
+gem "omniauth-rails_csrf_protection"
+gem "dotenv-rails", groups: [ :development, :test ]
+gem "octokit"
 gem "enumerize"
-gem 'faraday-retry'
+gem "faraday-retry"
 gem "dry-container"
 gem "aasm"
 
@@ -33,13 +33,13 @@ group :development, :test do
   gem "brakeman", require: false
   gem "rubocop", require: false
   gem "rubocop-rails-omakase", require: false
-  gem 'rubocop-rails', require: false
-  gem 'rubocop-performance', require: false
-  gem 'rubocop-rspec', require: false
-  gem 'rubocop-minitest', require: false
-  gem 'rubocop-factory_bot', require: false
-  gem 'rubocop-capybara', require: false
-  gem 'rubocop-packaging', require: false
+  gem "rubocop-rails", require: false
+  gem "rubocop-performance", require: false
+  gem "rubocop-rspec", require: false
+  gem "rubocop-minitest", require: false
+  gem "rubocop-factory_bot", require: false
+  gem "rubocop-capybara", require: false
+  gem "rubocop-packaging", require: false
 end
 
 group :development do
@@ -52,3 +52,6 @@ group :test do
   gem "minitest-power_assert"
   gem "webmock"
 end
+
+# Rails 7.2 test runner is not compatible with Minitest 6.x
+gem "minitest", "< 6"

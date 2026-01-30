@@ -35,7 +35,7 @@ Rails.application.configure do
       []
     end
 
-  config.action_dispatch.trusted_proxies = default_trusted + [IPAddr.new("100.64.0.0/10")]
+  config.action_dispatch.trusted_proxies = default_trusted + [ IPAddr.new("100.64.0.0/10") ]
   config.action_controller.forgery_protection_origin_check = false
 
   config.assets.compile = false
