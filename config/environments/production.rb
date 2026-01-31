@@ -4,26 +4,6 @@ require "active_support/core_ext/integer/time"
 require "ipaddr"
 
 Rails.application.configure do
-  # config.require_master_key = true
-  # config.public_file_server.enabled = false
-  # config.assets.css_compressor = :sass
-  # config.asset_host = "http://assets.example.com"
-  # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for Apache
-  # config.action_dispatch.x_sendfile_header = "X-Accel-Redirect" # for NGINX
-  # config.action_cable.mount_path = nil
-  # config.action_cable.url = "wss://example.com/cable"
-  # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
-  # config.cache_store = :mem_cache_store
-  # config.active_job.queue_adapter = :resque
-  # config.active_job.queue_name_prefix = "rails_project_66_production"
-  # caching is enabled.
-  # config.action_mailer.raise_delivery_errors = false
-  # config.hosts = [
-  #   "example.com",     # Allow requests from example.com
-  #   /.*\.example\.com/ # Allow requests from subdomains like `www.example.com`
-  # ]
-  # config.host_authorization = { exclude: ->(request) { request.path == "/up" } }
-
   config.assume_ssl = true
   config.ssl_options = { redirect: { exclude: ->(request) { request.path == "/up" } } }
   config.force_ssl = true
@@ -59,7 +39,6 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
   config.active_record.attributes_for_inspect = [ :id ]
 
-  # === URL options for production (Railway) ===
   app_host = ENV["APP_HOST"].to_s.strip
   app_protocol = ENV["APP_PROTOCOL"].to_s.strip
 
