@@ -6,22 +6,18 @@ services:
     command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - .:/project
-    ports:
-      - "3000:3000"
     depends_on:
       - postgres
     environment:
       - DOCKER=true
       - DB_HOST=postgres
-      # Эти переменные нужны, чтобы твой database.yml точно понял, что происходит
       - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
+      - DB_PASSWORD=
 
   postgres:
     image: postgres:16
     environment:
-      # ВАЖНО: задаем пароль, который ожидает твой database.yml
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_USER: postgres
       POSTGRES_DB: github_quality_test
     volumes:
