@@ -23,6 +23,29 @@
     end
 %>
 
+<%
+db_password = ENV["DB_PASSWORD"]
+db_password = nil if db_password.to_s.strip.empty?
+
+pg_password = ENV["PGPASSWORD"]
+pg_password = nil if pg_password.to_s.strip.empty?
+
+postgres_password = ENV["POSTGRES_PASSWORD"]
+postgres_password = nil if postgres_password.to_s.strip.empty?
+
+db_url_password = nil
+begin
+  require "uri"
+  u = ENV["DATABASE_URL"]
+  if u && !u.to_s.strip.empty?
+    db_url_password = URI(u).password
+    db_url_password = nil if db_url_password.to_s.strip.empty?
+  end
+rescue StandardError
+  db_url_password = nil
+end
+%>
+
 default: &default
   adapter: postgresql
   encoding: unicode
@@ -30,8 +53,7 @@ default: &default
   host: <%= ENV.fetch("DB_HOST", ENV.fetch("PGHOST", default_host)) %>
   port: <%= ENV.fetch("DB_PORT", ENV.fetch("PGPORT", 5432)) %>
   username: <%= ENV.fetch("DB_USERNAME", ENV.fetch("PGUSER", default_user)) %>
-  password: <%= ENV["DB_PASSWORD"] || ENV["PGPASSWORD"] || ENV["POSTGRES_PASSWORD"] || (in_container ? "postgres" : nil) %>
-
+  password: <%= db_password || pg_password || postgres_password || db_url_password || (in_container ? "postgres" : nil) %>
 development:
   <<: *default
   database: github_quality_development
