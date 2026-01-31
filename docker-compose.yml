@@ -1,23 +1,37 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: github_quality_test
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
   app:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: ruby test.rb
     volumes:
       - .:/project
     depends_on:
       - postgres
     environment:
-      - DOCKER=true
-      - DB_HOST=postgres
-      - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
-
-  postgres:
-    image: postgres:16
-    environment:
-      POSTGRES_HOST_AUTH_METHOD: trust
+      DOCKER: "true"
+      DB_HOST: postgres
+      DB_PORT: "5432"
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
       POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: github_quality_test
-      PGDATA: /var/lib/postgresql/data/pg_fresh_data_v5
+      PGHOST: postgres
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: github_quality_test
+
+volumes:
+  pgdata:
