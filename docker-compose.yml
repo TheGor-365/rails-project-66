@@ -12,16 +12,16 @@ services:
       - DOCKER=true
       - DB_HOST=postgres
       - DB_USERNAME=postgres
-      - DB_PASSWORD=postgres
+      - DB_PASSWORD=
 
   postgres:
     image: postgres:16
     environment:
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
       POSTGRES_USER: postgres
       POSTGRES_DB: github_quality_test
     volumes:
-      - pg_data_fresh:/var/lib/postgresql/data
+      - pg_data_final_v3:/var/lib/postgresql/data
 
 volumes:
-  pg_data_fresh:
+  pg_data_final_v3:
