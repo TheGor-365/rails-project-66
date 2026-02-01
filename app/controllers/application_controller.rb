@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
-  allow_browser versions: :modern
+  # В тестах/деве это ломает интеграционные запросы (406 Not Acceptable),
+  # а школе не нужно. Ограничиваем только продом.
+  allow_browser versions: :modern if Rails.env.production?
 
   helper_method :current_user
 
