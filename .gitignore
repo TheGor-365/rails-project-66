@@ -30,3 +30,7 @@
 
 /vendor/
 /vendor/*
+
+# SQLite (test)
+db/*.sqlite3
+db/*.sqlite3-*
