@@ -20,11 +20,11 @@ RUN apt-get update -qq && \
 
 ARG NODE_VERSION=22.18.0
 ARG YARN_VERSION=1.22.22
-ENV PATH=/usr/local/node/bin:$PATH
-RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
-    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
-    npm install -g yarn@$YARN_VERSION && \
-    rm -rf /tmp/node-build-master
+RUN apt-get update -qq -o Acquire::Retries=5 && \
+    apt-get install --no-install-recommends -y nodejs yarnpkg && \
+    ln -sf /usr/bin/yarnpkg /usr/local/bin/yarn && \
+    node -v && yarn -v && \
+    rm -rf /var/lib/apt/lists/* /var/cache/apt/archives
 
 COPY Gemfile Gemfile.lock ./
 RUN bundle install && \
@@ -41,9 +41,6 @@ RUN bundle exec bootsnap precompile app/ lib/
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
 FROM base
-
-COPY --from=build /usr/local/node /usr/local/node
-ENV PATH=/usr/local/node/bin:$PATH
 
 COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
 COPY --from=build /rails /rails
