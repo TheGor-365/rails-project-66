@@ -54,13 +54,17 @@ default: &default
   port: <%= ENV.fetch("DB_PORT", ENV.fetch("PGPORT", 5432)) %>
   username: <%= ENV.fetch("DB_USERNAME", ENV.fetch("PGUSER", default_user)) %>
   password: <%= db_password || pg_password || postgres_password || db_url_password || (in_container ? "postgres" : nil) %>
+
 development:
   <<: *default
   database: github_quality_development
 
+# Test environment: switch to SQLite to avoid requiring Postgres in CI/tests.
 test:
-  <<: *default
-  database: github_quality_test
+  adapter: sqlite3
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
+  timeout: 5000
+  database: db/test.sqlite3
 
 production:
   <<: *default
