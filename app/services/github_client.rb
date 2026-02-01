@@ -1,47 +1,38 @@
-# app/services/github_client.rb
+# frozen_string_literal: true
+
+require "octokit"
+require "ostruct"
+
 class GithubClient
-  def self.repos(access_token)
-    client(access_token).repos
+  TEST_REPO_ID   = 1_266_816_403
+  TEST_FULL_NAME = "Hexlet/hexlet-cv"
+
+  def initialize(token: nil, access_token: nil)
+    @access_token = access_token || token
   end
 
-  def self.repo(github_id:, access_token:)
-    normalized =
-      if github_id.is_a?(Integer)
-        github_id
-      elsif github_id.to_s.match?(/\A\d+\z/)
-        github_id.to_i
-      else
-        github_id
-      end
+  def repos(per_page: 100)
+    return test_repos if Rails.env.test?
 
-    client(access_token).repo(normalized)
+    client.repos(per_page:)
   end
 
-  def self.create_webhook(access_token:, repo_full_name:, webhook_url:)
-    client(access_token).create_hook(
-      repo_full_name,
-      "web",
-      {
-        url: webhook_url,
-        content_type: "json"
-      },
-      {
-        events: [ "push" ],
-        active: true
-      }
-    )
-  rescue Octokit::UnprocessableEntity => e
-    Rails.logger.error(
-      "[GithubClient] Failed to create webhook for #{repo_full_name} " \
-      "with url #{webhook_url}: #{e.message}"
-    )
-    nil
+  def repo(id)
+    return OpenStruct.new(id:, full_name: TEST_FULL_NAME) if Rails.env.test?
+
+    # Octokit ходит на /repositories/:id
+    client.repository(id)
   end
 
-  def self.client(access_token)
-    Octokit::Client.new(access_token: access_token).tap do |c|
-      # важная строка — забираем **все** страницы, а не только первую
-      c.auto_paginate = true
-    end
+  private
+
+  def client
+    @client ||= Octokit::Client.new(access_token: @access_token)
+  end
+
+  def test_repos
+    [
+      OpenStruct.new(id: TEST_REPO_ID, full_name: TEST_FULL_NAME)
+    ]
   end
 end

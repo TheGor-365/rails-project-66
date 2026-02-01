@@ -56,3 +56,5 @@ end
 
 # Rails 7.2 test runner is not compatible with Minitest 6.x
 gem "minitest", "< 6"
+
+gem "ostruct", "~> 0.6.3"
