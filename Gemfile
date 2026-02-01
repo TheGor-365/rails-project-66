@@ -40,6 +40,7 @@ group :development, :test do
   gem "rubocop-factory_bot", require: false
   gem "rubocop-capybara", require: false
   gem "rubocop-packaging", require: false
+  gem "faker"
 end
 
 group :development do

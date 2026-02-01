@@ -4,9 +4,11 @@ Rails.application.routes.draw do
   scope module: :web do
     root "home#index"
 
-    get  "/auth/failure",         to: "auth#failure"
-    get  "/auth/github/callback", to: "auth#create",  as: :auth_github_callback
-    delete "/logout",             to: "auth#destroy", as: :logout
+    get  "/auth/failure",            to: "auth#failure", as: :auth_failure
+    post "/auth/:provider",          to: "auth#request", as: :auth_request
+    get  "/auth/:provider/callback", to: "auth#create",  as: :callback_auth
+
+    delete "/logout", to: "auth#destroy", as: :logout
 
     resources :repositories, only: %i[index new create show] do
       resources :checks, only: %i[create show], module: :repositories
