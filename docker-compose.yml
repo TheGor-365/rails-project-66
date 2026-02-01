@@ -1,29 +1,20 @@
 services:
   postgres:
-    image: postgres:16
+    image: postgres:16-alpine
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    tmpfs:
-      - /var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
-      interval: 2s
-      timeout: 5s
-      retries: 30
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-github_quality_test}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   app:
-    build: .
-    command: ruby test.rb
-    volumes:
-      - .:/project
-    depends_on:
-      postgres:
-        condition: service_healthy
     environment:
-      DOCKER: "true"
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-github_quality_test}
       RAILS_ENV: test
-      DB_HOST: postgres
-      DB_PORT: "5432"
-      DB_USERNAME: postgres
-      DB_PASSWORD: postgres
+
+volumes:
+  pgdata:
