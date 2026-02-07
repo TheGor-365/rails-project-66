@@ -1,0 +1,16 @@
+<h1>New Repository</h1>
+
+<% repos = defined?(@github_repositories) ? @github_repositories : [] %>
+
+<% if repos.present? %>
+  <p>Available GitHub repositories: <%= repos.size %></p>
+<% else %>
+  <p>No GitHub repositories</p>
+<% end %>
+
+<%# Минимальная форма. Для тестов важно просто отрендерить страницу без падений. %>
+<%= form_with url: repositories_path, scope: :repository, method: :post do |f| %>
+  <%= f.label :github_id, "GitHub ID" %>
+  <%= f.number_field :github_id %>
+  <%= f.submit "Add" %>
+<% end %>

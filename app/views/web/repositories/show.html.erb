@@ -1,0 +1,25 @@
+<h1>Repository</h1>
+
+<% if defined?(@repository) && @repository.present? %>
+  <p><strong><%= @repository.full_name.presence || @repository.name %></strong></p>
+<% else %>
+  <p>Repository not found</p>
+<% end %>
+
+<% checks = defined?(@checks) ? @checks : [] %>
+
+<h2>Checks</h2>
+<% if checks.present? %>
+  <ul>
+    <% checks.each do |check| %>
+      <li>
+        <%= check.status %>
+        <% if check.respond_to?(:short_commit_id) && check.short_commit_id.present? %>
+          (<%= check.short_commit_id %>)
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No checks</p>
+<% end %>

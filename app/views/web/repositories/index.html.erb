@@ -1,0 +1,13 @@
+<h1>Repositories</h1>
+
+<% if defined?(@repositories) && @repositories.present? %>
+  <ul>
+    <% @repositories.each do |repo| %>
+      <li>
+        <%= repo.full_name.presence || repo.name %>
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No repositories</p>
+<% end %>

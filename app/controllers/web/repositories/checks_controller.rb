@@ -2,7 +2,7 @@
 
 module Web
   module Repositories
-    class ChecksController < ApplicationController
+    class ChecksController < Web::ApplicationController
       before_action :require_login
       before_action :set_repository
 
@@ -15,6 +15,7 @@ module Web
 
       def show
         @check = @repository.checks.find(params[:id])
+        render :show, formats: [ :html ]
       end
 
       private

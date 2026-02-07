@@ -1,23 +1,30 @@
 # frozen_string_literal: true
 
 module Web
-  class RepositoriesController < ApplicationController
+  class RepositoriesController < Web::ApplicationController
     before_action :require_login
     before_action :set_repository, only: %i[show]
 
     def index
       @repositories = current_user.repositories.order(created_at: :desc)
+      render :index, formats: [ :html ]
     end
 
     def new
-      @github_repositories = GithubClient.repos(current_user.token)
+      github_client = ApplicationContainer[:github_client]
+
+      @github_repositories = github_client.repos(access_token: current_user.token)
       @repository = current_user.repositories.build
+
+      render :new, formats: [ :html ]
     end
 
     def create
+      github_client = ApplicationContainer[:github_client]
+
       github_id_param = params.require(:repository).fetch(:github_id)
 
-      github_repo = GithubClient.repo(
+      github_repo = github_client.repo(
         github_id: github_id_param.to_i,
         access_token: current_user.token
       )
@@ -37,7 +44,7 @@ module Web
           protocol: ENV.fetch("APP_PROTOCOL", "http")
         )
 
-        GithubClient.create_webhook(
+        github_client.create_webhook(
           access_token: current_user.token,
           repo_full_name: @repository.full_name,
           webhook_url: webhook_url
@@ -50,13 +57,14 @@ module Web
           "Errors: #{@repository.errors.full_messages.inspect}"
         )
 
-        @github_repositories = GithubClient.repos(current_user.token)
-        render :new, status: :unprocessable_entity
+        @github_repositories = github_client.repos(access_token: current_user.token)
+        render :new, status: :unprocessable_entity, formats: [ :html ]
       end
     end
 
     def show
       @checks = @repository.checks.order(created_at: :desc)
+      render :show, formats: [ :html ]
     end
 
     private
