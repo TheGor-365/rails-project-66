@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 
 class CodeCheckerStub
-  Result = Struct.new(:output, :offenses_count, :exit_status, :commit_id, keyword_init: true) do
+  Result = Struct.new(:commit_id, :output, :offenses_count, :success, keyword_init: true) do
     def success?
-      exit_status.zero?
+      !!success
     end
   end
 
-  FAKE_COMMIT_ID = "stub-commit-sha"
-
   def self.run(repository:, commit_id: nil)
+    _ = repository # интерфейс совместим
+
     Result.new(
+      commit_id: commit_id || "stub-commit-sha",
       output: "rubocop stub output",
-      offenses_count: 3,
-      exit_status: 1, # не прошла
-      commit_id: FAKE_COMMIT_ID
+      offenses_count: 0,
+      success: true
     )
   end
 end

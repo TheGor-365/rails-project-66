@@ -5,36 +5,38 @@ class Repository::Check < ApplicationRecord
 
   include AASM
 
-  aasm column: :status do
-    state :pending,  initial: true
+  aasm column: :aasm_state do
+    state :pending, initial: true
     state :running
     state :finished
-    state :failed
 
     event :run_check do
       transitions from: :pending, to: :running
     end
 
-    event :complete_success do
+    event :finish do
       transitions from: :running, to: :finished
-    end
-
-    event :complete_failure do
-      transitions from: :running, to: :failed
     end
   end
 
-  STATUS_LABELS = {
+  AASM_LABELS = {
     "pending"  => "Ожидает",
     "running"  => "Выполняется",
-    "finished" => "Завершена",
-    "failed"   => "Ошибка"
+    "finished" => "Завершена"
+  }.freeze
+
+  RESULT_LABELS = {
+    "pending" => "Ожидает",
+    "passed"  => "Успешно",
+    "failed"  => "С ошибками"
   }.freeze
 
   SHORT_SHA_LENGTH = 7
 
   def human_status
-    STATUS_LABELS[status] || status
+    return AASM_LABELS[aasm_state] || aasm_state unless finished?
+
+    RESULT_LABELS[status] || status
   end
 
   def short_commit_id
@@ -50,7 +52,7 @@ class Repository::Check < ApplicationRecord
   end
 
   def perform!(commit_id: nil)
-    update!(status: :running)
+    run_check! if may_run_check?
 
     code_checker = ApplicationContainer[:code_checker]
 
@@ -58,27 +60,33 @@ class Repository::Check < ApplicationRecord
       result = code_checker.run(repository: repository, commit_id: commit_id)
     rescue StandardError => e
       update!(
-        status: :failed,
+        commit_id: commit_id,
+        status: "failed",
         passed: false,
         output: e.full_message(highlight: false, order: :top)
       )
-
+      finish! if may_finish?
       notify_if_failed(nil)
       return self
     end
 
     offenses_count = result.offenses_count.to_i
-    success        = result.success?
+    ran_ok = result.success?
+
+    passed = ran_ok && offenses_count.zero?
+    final_status = passed ? "passed" : "failed"
+    stored_commit_id = result.commit_id.presence || commit_id
 
     update!(
-      commit_id:        result.commit_id,
-      output:           result.output,
+      commit_id: stored_commit_id,
+      output: result.output,
       violations_count: offenses_count,
-      passed:           success,
-      status:           success ? :finished : :failed
+      passed: passed,
+      status: final_status
     )
 
-    notify_if_failed(offenses_count)
+    finish! if may_finish?
+    notify_if_failed(offenses_count) unless passed
 
     self
   end

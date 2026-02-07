@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Web
-  class AuthController < ApplicationController
+  class AuthController < Web::ApplicationController
     def create
       auth = request.env["omniauth.auth"]
 

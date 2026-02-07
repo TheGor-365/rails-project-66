@@ -1,10 +1,16 @@
 # frozen_string_literal: true
 
+require "dry/container"
+require "octokit"
+
 class ApplicationContainer
   extend Dry::Container::Mixin
 end
 
-# Github-клиент: Octokit в проде, заглушка в тестах
+ApplicationContainer.register(:octokit_client_class) do
+  Octokit::Client
+end
+
 ApplicationContainer.register(:github_client) do
   if Rails.env.test?
     GithubClientStub
@@ -13,7 +19,6 @@ ApplicationContainer.register(:github_client) do
   end
 end
 
-# Линтер (Rubocop): реальный в проде, заглушка в тестах
 ApplicationContainer.register(:code_checker) do
   if Rails.env.test?
     CodeCheckerStub

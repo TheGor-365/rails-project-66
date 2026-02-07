@@ -3,17 +3,27 @@
 require "test_helper"
 
 class RepositoryCheckTest < ActiveSupport::TestCase
-  test "perform! uses code checker from container and updates fields" do
-    repo = repositories(:one)
+  test "perform! uses code_checker from container and updates fields" do
+    user = User.create!(email: "model-owner@example.com")
+    repo = user.repositories.create!(
+      github_id: 1,
+      name: "example",
+      full_name: "TheGor-365/example",
+      language: "Ruby",
+      clone_url: "https://github.com/TheGor-365/example.git",
+      ssh_url: "git@github.com:TheGor-365/example.git"
+    )
 
-    check = Repository::Check.create!(repository: repo)
+    check = repo.checks.create!
+    check.perform!(commit_id: "abc123")
 
-    check.perform!
+    check.reload
 
-    assert { check.status == "failed" }
-    assert { check.passed == false }
-    assert { check.commit_id == CodeCheckerStub::FAKE_COMMIT_ID }
-    assert { check.output.present? }
-    assert { check.violations_count == 3 }
+    assert { check.finished? }
+    assert { check.status == "passed" }
+    assert { check.passed == true }
+    assert { check.violations_count == 0 }
+    assert { check.commit_id == "abc123" }
+    assert { check.output == "rubocop stub output" }
   end
 end

@@ -3,45 +3,29 @@
 require "octokit"
 
 class GithubClient
-  TEST_REPO_ID   = 1_266_816_403
-  TEST_FULL_NAME = "Hexlet/hexlet-cv"
+  class << self
+    def repos(access_token:, per_page: 100)
+      client(access_token).repos(per_page:)
+    end
 
-  Repo = Struct.new(:id, :full_name, keyword_init: true)
+    def repo(github_id:, access_token:)
+      client(access_token).repository(github_id)
+    end
 
-  def self.repos(*args, per_page: 100, token: nil, access_token: nil, **_)
-    token ||= args.first if args.first.is_a?(String)
-    new(token:, access_token:).repos(per_page:)
-  end
+    def create_webhook(access_token:, repo_full_name:, webhook_url:)
+      config = { url: webhook_url, content_type: "json" }
+      options = { events: [ "push" ], active: true }
 
-  def self.repo(id, *args, token: nil, access_token: nil, **_)
-    token ||= args.first if args.first.is_a?(String)
-    new(token:, access_token:).repo(id)
-  end
+      client(access_token).create_hook(repo_full_name, "web", config, options)
+    end
 
-  def initialize(token: nil, access_token: nil)
-    @access_token = access_token || token
-  end
+    private
 
-  def repos(per_page: 100)
-    return test_repos if Rails.env.test?
-
-    client.repos(per_page:)
-  end
-
-  def repo(id)
-    return Repo.new(id:, full_name: TEST_FULL_NAME) if Rails.env.test?
-
-    # Octokit ходит на /repositories/:id
-    client.repository(id)
-  end
-
-  private
-
-  def client
-    @client ||= Octokit::Client.new(access_token: @access_token)
-  end
-
-  def test_repos
-    [ Repo.new(id: TEST_REPO_ID, full_name: TEST_FULL_NAME) ]
+    def client(access_token)
+      client_class = ApplicationContainer[:octokit_client_class]
+      client_class.new(access_token:)
+    rescue KeyError
+      Octokit::Client.new(access_token:)
+    end
   end
 end
