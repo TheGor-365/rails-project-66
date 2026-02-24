@@ -1,6 +1,6 @@
 require "test_helper"
 
-class HomeControllerTest < ActionDispatch::IntegrationTest
+class Web::HomeControllerTest < ActionDispatch::IntegrationTest
   test "home index returns success and contains expected text" do
     get root_url
     assert_response :success

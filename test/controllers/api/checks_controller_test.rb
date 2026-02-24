@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class ApiChecksControllerTest < ActionDispatch::IntegrationTest
+class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
   def build_repo(github_id:)
     user = User.create!(email: "api-owner@example.com")
     user.repositories.create!(

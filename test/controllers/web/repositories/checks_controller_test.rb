@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class WebRepositoriesChecksControllerTest < ActionDispatch::IntegrationTest
+class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
   def build_repo_for(user)
     user.repositories.create!(
       github_id: 10,

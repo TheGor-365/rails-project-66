@@ -2,7 +2,7 @@
 
 require "test_helper"
 
-class RepositoriesControllerTest < ActionDispatch::IntegrationTest
+class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
   test "guest is redirected from index" do
     get repositories_path
     assert_redirected_to root_path
