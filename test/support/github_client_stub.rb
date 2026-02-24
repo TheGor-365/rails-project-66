@@ -1,28 +1,59 @@
 # frozen_string_literal: true
 
+require "ostruct"
+
 class GithubClientStub
-  StubRepo = Struct.new(:id, :name, :full_name, :language, :clone_url, :ssh_url, keyword_init: true)
+  class << self
+    def repos(access_token:)
+      @repos ||= [
+        build_repo(
+          id: 9_100_001,
+          name: "rails-project",
+          full_name: "hexlet-basics/rails-project",
+          language: "Ruby"
+        ),
+        build_repo(
+          id: 9_100_002,
+          name: "frontend-check",
+          full_name: "hexlet-basics/frontend-check",
+          language: "JavaScript"
+        )
+      ]
+    end
 
-  def self.repos(access_token:)
-    [
-      StubRepo.new(
-        id: 1,
-        name: "example",
-        full_name: "TheGor-365/example",
-        language: "Ruby",
-        clone_url: "https://github.com/TheGor-365/example.git",
-        ssh_url: "git@github.com:TheGor-365/example.git"
+    def repo(github_id:, access_token:)
+      found_repo = repos(access_token: access_token).find { |repo_item| repo_item.id.to_s == github_id.to_s }
+      return found_repo if found_repo
+
+      normalized_id = github_id.to_i
+      return nil if normalized_id <= 0
+
+      build_repo(
+        id: normalized_id,
+        name: "repo-#{normalized_id}",
+        full_name: "stub-user/repo-#{normalized_id}",
+        language: "Ruby"
       )
-    ]
-  end
+    end
 
-  def self.repo(github_id:, access_token:)
-    repos(access_token: access_token).find { |repo| repo.id.to_s == github_id.to_s }
-  end
+    def create_webhook(access_token:, repo_full_name:, webhook_url:)
+      Rails.logger.info(
+        "GithubClientStub.create_webhook(access_token: [FILTERED], repo_full_name: #{repo_full_name}, webhook_url: #{webhook_url})"
+      )
+      true
+    end
 
-  def self.create_webhook(access_token:, repo_full_name:, webhook_url:)
-    Rails.logger.info(
-      "GithubClientStub.create_webhook(access_token: [FILTERED], repo_full_name: #{repo_full_name}, webhook_url: #{webhook_url})"
-    )
+    private
+
+    def build_repo(id:, name:, full_name:, language:)
+      OpenStruct.new(
+        id: id,
+        name: name,
+        full_name: full_name,
+        language: language,
+        clone_url: "https://github.com/#{full_name}.git",
+        ssh_url: "git@github.com:#{full_name}.git"
+      )
+    end
   end
 end
