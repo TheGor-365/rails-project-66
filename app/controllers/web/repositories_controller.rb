@@ -29,6 +29,18 @@ module Web
         access_token: current_user.token
       )
 
+      if github_repo.nil?
+        Rails.logger.warn(
+          "[RepositoriesController#create] GitHub repo not found for github_id=#{github_id_param}"
+        )
+
+        @repository = current_user.repositories.build(github_id: github_id_param)
+        @repository.errors.add(:github_id, :invalid)
+        @github_repositories = github_client.repos(access_token: current_user.token)
+        render :new, status: :unprocessable_entity, formats: [ :html ]
+        return
+      end
+
       @repository = current_user.repositories.build(
         github_id:  github_repo.id,
         name:       github_repo.name,
