@@ -1,59 +1,54 @@
 # frozen_string_literal: true
 
-require 'ostruct'
-
 class GithubClientStub
-  class << self
-    def repos(access_token:)
-      @repos ||= [
-        build_repo(
-          id:        9_100_001,
-          name:      'rails-project',
-          full_name: 'hexlet-basics/rails-project',
-          language:  'Ruby'
-        ),
-        build_repo(
-          id:        9_100_002,
-          name:      'frontend-check',
-          full_name: 'hexlet-basics/frontend-check',
-          language:  'JavaScript'
-        )
-      ]
-    end
+  RepoStub = Struct.new(
+    :id,
+    :name,
+    :full_name,
+    :language,
+    :clone_url,
+    :ssh_url,
+    keyword_init: true
+  )
 
-    def repo(github_id:, access_token:)
-      found_repo = repos(access_token: access_token).find { |repo_item| repo_item.id.to_s == github_id.to_s }
-      return found_repo if found_repo
-
-      normalized_id = github_id.to_i
-      return nil if normalized_id <= 0
-
-      build_repo(
-        id:        normalized_id,
-        name:      "repo-#{normalized_id}",
-        full_name: "stub-user/repo-#{normalized_id}",
-        language:  'Ruby'
+  def self.repos(**)
+    [
+      RepoStub.new(
+        id:        9_100_001,
+        name:      'rails-project',
+        full_name: 'TheGor-365/rails-project',
+        language:  'Ruby',
+        clone_url: 'https://github.com/TheGor-365/rails-project.git',
+        ssh_url:   'git@github.com:TheGor-365/rails-project.git'
+      ),
+      RepoStub.new(
+        id:        9_100_002,
+        name:      'frontend-check',
+        full_name: 'TheGor-365/frontend-check',
+        language:  'JavaScript',
+        clone_url: 'https://github.com/TheGor-365/frontend-check.git',
+        ssh_url:   'git@github.com:TheGor-365/frontend-check.git'
       )
-    end
+    ]
+  end
 
-    def create_webhook(access_token:, repo_full_name:, webhook_url:)
-      Rails.logger.info(
-        "GithubClientStub.create_webhook(access_token: [FILTERED], repo_full_name: #{repo_full_name}, webhook_url: #{webhook_url})"
-      )
-      true
-    end
+  def self.repo(github_id:, **)
+    normalized_id = github_id.to_i
+    full_name = "TheGor-365/repo-#{normalized_id}"
 
-    private
+    RepoStub.new(
+      id:        normalized_id,
+      name:      "repo-#{normalized_id}",
+      full_name: full_name,
+      language:  'Ruby',
+      clone_url: "https://github.com/#{full_name}.git",
+      ssh_url:   "git@github.com:#{full_name}.git"
+    )
+  end
 
-    def build_repo(id:, name:, full_name:, language:)
-      OpenStruct.new(
-        id:        id,
-        name:      name,
-        full_name: full_name,
-        language:  language,
-        clone_url: "https://github.com/#{full_name}.git",
-        ssh_url:   "git@github.com:#{full_name}.git"
-      )
-    end
+  # Контроллер не использует return value. Возвращаем nil, чтобы RuboCop
+  # не пытался трактовать метод как predicate.
+  def self.create_webhook(**)
+    nil
   end
 end
