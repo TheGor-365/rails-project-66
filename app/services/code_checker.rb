@@ -110,7 +110,7 @@ class CodeChecker
     offenses_count = rubocop_offenses_count(stdout)
     success = status.success? && offenses_count.zero?
 
-    [stdout, offenses_count, success]
+    [ stdout, offenses_count, success ]
   end
 
   def run_eslint(repo_path)
@@ -130,6 +130,6 @@ class CodeChecker
     offenses_count = eslint_offenses_count(stdout)
     success = status.success? && offenses_count.zero?
 
-    [stdout, offenses_count, success]
+    [ stdout, offenses_count, success ]
   end
 end

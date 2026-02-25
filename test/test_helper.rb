@@ -9,7 +9,7 @@ require 'webmock/minitest'
 
 WebMock.disable_net_connect!(allow_localhost: true)
 
-Dir[Rails.root.join('test/support/**/*.rb')].sort.each { |f| require f }
+Rails.root.glob('test/support/**/*.rb').each { |f| require f }
 
 module ActiveSupport
   class TestCase

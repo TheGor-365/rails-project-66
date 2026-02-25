@@ -22,7 +22,7 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     assert { check.status == 'passed' }
     assert { check.commit_id == commit_id }
     assert { check.passed == true }
-    assert { check.violations_count == 0 }
+    assert { check.violations_count.zero? }
   end
 
   test 'create returns ok and creates check' do

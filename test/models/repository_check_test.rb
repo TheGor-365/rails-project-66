@@ -7,7 +7,7 @@ class RepositoryCheckTest < ActiveSupport::TestCase
     assert { check.finished? }
     assert { check.status == 'passed' }
     assert { check.passed == true }
-    assert { check.violations_count == 0 }
+    assert { check.violations_count.zero? }
     assert { check.commit_id == 'abc123' }
     assert { check.output == 'rubocop stub output' }
   end

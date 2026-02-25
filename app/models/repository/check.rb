@@ -68,9 +68,9 @@ class Repository::Check < ApplicationRecord
 
   def run_code_checker(commit_id)
     code_checker = ApplicationContainer[:code_checker]
-    [code_checker.run(repository: repository, commit_id: commit_id), nil]
+    [ code_checker.run(repository: repository, commit_id: commit_id), nil ]
   rescue StandardError => e
-    [nil, e]
+    [ nil, e ]
   end
 
   def handle_failed_check_run!(commit_id, error)
