@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class Repository::Check < ApplicationRecord
-  belongs_to :repository
-
   include AASM
+  include Repository::CheckOutputParsing
+
+  belongs_to :repository
 
   aasm column: :aasm_state do
     state :pending, initial: true
@@ -54,28 +55,42 @@ class Repository::Check < ApplicationRecord
   def perform!(commit_id: nil)
     run_check! if may_run_check?
 
+    result, error = run_code_checker(commit_id)
+    return handle_failed_check_run!(commit_id, error) if error
+
+    run_data = persist_successful_check_run!(result, fallback_commit_id: commit_id)
+    finalize_check!(passed: run_data[:passed], offenses_count: run_data[:offenses_count])
+
+    self
+  end
+
+  private
+
+  def run_code_checker(commit_id)
     code_checker = ApplicationContainer[:code_checker]
+    [code_checker.run(repository: repository, commit_id: commit_id), nil]
+  rescue StandardError => e
+    [nil, e]
+  end
 
-    begin
-      result = code_checker.run(repository: repository, commit_id: commit_id)
-    rescue StandardError => e
-      update!(
-        commit_id: commit_id,
-        status:    'failed',
-        passed:    false,
-        output:    e.full_message(highlight: false, order: :top)
-      )
-      finish! if may_finish?
-      notify_if_failed(nil)
-      return self
-    end
+  def handle_failed_check_run!(commit_id, error)
+    update!(
+      commit_id: commit_id,
+      status:    'failed',
+      passed:    false,
+      output:    error.full_message(highlight: false, order: :top)
+    )
 
+    finalize_check!(passed: false, offenses_count: nil)
+
+    self
+  end
+
+  def persist_successful_check_run!(result, fallback_commit_id:)
     offenses_count = result.offenses_count.to_i
-    ran_ok = result.success?
-
-    passed = ran_ok && offenses_count.zero?
+    passed = result.success? && offenses_count.zero?
     final_status = passed ? 'passed' : 'failed'
-    stored_commit_id = result.commit_id.presence || commit_id
+    stored_commit_id = result.commit_id.presence || fallback_commit_id
 
     update!(
       commit_id:        stored_commit_id,
@@ -85,60 +100,13 @@ class Repository::Check < ApplicationRecord
       status:           final_status
     )
 
+    { passed:, offenses_count: }
+  end
+
+  def finalize_check!(passed:, offenses_count:)
     finish! if may_finish?
     notify_if_failed(offenses_count) unless passed
-
-    self
   end
-
-  def parsed_output
-    return if output.blank?
-
-    JSON.parse(output)
-  rescue JSON::ParserError
-    nil
-  end
-
-  def offenses_by_file
-    data = parsed_output
-    return [] if data.blank?
-
-    if data.is_a?(Hash) && data['files'].is_a?(Array)
-      return data['files'].map do |file|
-        path     = file['path']
-        offenses = Array(file['offenses']).map do |offense|
-          {
-            message: offense['message'],
-            rule:    offense['cop_name'],
-            line:    offense.dig('location', 'line'),
-            column:  offense.dig('location', 'column')
-          }
-        end
-
-        { path:, offenses: }
-      end
-    end
-
-    if data.is_a?(Array)
-      return data.map do |file|
-        path     = file['filePath'] || file['path']
-        offenses = Array(file['messages']).map do |offense|
-          {
-            message: offense['message'],
-            rule:    offense['ruleId'],
-            line:    offense['line'],
-            column:  offense['column']
-          }
-        end
-
-        { path:, offenses: }
-      end
-    end
-
-    []
-  end
-
-  private
 
   def notify_if_failed(offenses_count)
     failed = offenses_count.nil? || offenses_count.positive?

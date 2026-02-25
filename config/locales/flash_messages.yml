@@ -1,0 +1,21 @@
+en:
+  flash:
+    auth:
+      login_required: "Необходимо войти через GitHub"
+      github_missing_payload: "Ошибка авторизации через GitHub"
+      github_login_success: "Успешный вход через GitHub"
+      logged_out: "Вы вышли"
+      github_login_failed: "Не удалось войти через GitHub"
+    repositories:
+      created: "Репозиторий добавлен"
+
+ru:
+  flash:
+    auth:
+      login_required: "Необходимо войти через GitHub"
+      github_missing_payload: "Ошибка авторизации через GitHub"
+      github_login_success: "Успешный вход через GitHub"
+      logged_out: "Вы вышли"
+      github_login_failed: "Не удалось войти через GitHub"
+    repositories:
+      created: "Репозиторий добавлен"

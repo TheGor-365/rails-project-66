@@ -6,7 +6,7 @@ module Web
       auth = request.env['omniauth.auth']
 
       unless auth
-        redirect_to root_path, alert: 'Ошибка авторизации через GitHub'
+        redirect_to root_path, alert: t('flash.auth.github_missing_payload')
         return
       end
 
@@ -21,12 +21,12 @@ module Web
       user.save!
 
       session[:user_id] = user.id
-      redirect_to root_path, notice: 'Успешный вход через GitHub'
+      redirect_to root_path, notice: t('flash.auth.github_login_success')
     end
 
     def destroy
       session[:user_id] = nil
-      redirect_to root_path, notice: 'Вы вышли'
+      redirect_to root_path, notice: t('flash.auth.logged_out')
     end
 
     def failure
@@ -34,7 +34,7 @@ module Web
         %(OmniAuth failure: message="#{params[:message]}" strategy="#{params[:strategy]}")
       )
 
-      redirect_to root_path, alert: 'Не удалось войти через GitHub'
+      redirect_to root_path, alert: t('flash.auth.github_login_failed')
     end
   end
 end

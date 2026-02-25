@@ -14,6 +14,7 @@ module Web
       @checks = @repository.checks.order(created_at: :desc)
       render :show, formats: [:html]
     end
+
     def new
       github_client = ApplicationContainer[:github_client]
 
@@ -66,7 +67,7 @@ module Web
           webhook_url:    webhook_url
         )
 
-        redirect_to repositories_path, notice: 'Репозиторий добавлен'
+        redirect_to repositories_path, notice: t('flash.repositories.created')
       else
         Rails.logger.error(
           '[RepositoriesController#create] Repository not saved. ' \

@@ -9,7 +9,8 @@ Bundler.require(*Rails.groups)
 if %w[development test].include?(ENV.fetch('RAILS_ENV', 'development'))
   begin
     require 'dotenv/load'
-  rescue LoadError
+  rescue LoadError => e
+    warn("[boot] dotenv/load not available: #{e.message}") if ENV['DOTENV_VERBOSE'] == '1'
   end
 end
 

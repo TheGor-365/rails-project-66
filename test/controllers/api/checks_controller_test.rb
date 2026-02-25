@@ -15,6 +15,16 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  def assert_created_check_state!(repo, commit_id:)
+    check = repo.checks.order(created_at: :desc).first
+
+    assert { check.finished? }
+    assert { check.status == 'passed' }
+    assert { check.commit_id == commit_id }
+    assert { check.passed == true }
+    assert { check.violations_count == 0 }
+  end
+
   test 'create returns ok and creates check' do
     repo = build_repo(github_id: 345)
 
@@ -30,13 +40,7 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :ok
-
-    check = repo.checks.order(created_at: :desc).first
-    assert { check.finished? }
-    assert { check.status == 'passed' }
-    assert { check.commit_id == 'abc123def456' }
-    assert { check.passed == true }
-    assert { check.violations_count == 0 }
+    assert_created_check_state!(repo, commit_id: 'abc123def456')
   end
 
   test 'create returns not_found when repository does not exist' do

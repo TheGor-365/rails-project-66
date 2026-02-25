@@ -8,6 +8,8 @@ require 'uri'
 require 'pathname'
 
 class CodeChecker
+  include CodeChecker::Support
+
   RUBY       = 'Ruby'
   JAVASCRIPT = 'JavaScript'
 
@@ -34,12 +36,11 @@ class CodeChecker
 
   def run
     repo_path = clone_repository
-
     commit_id = current_commit_sha(repo_path)
 
-    output         = ''
+    output = ''
     offenses_count = 0
-    success        = false
+    success = false
 
     case @repository.language.to_s
     when RUBY
@@ -47,9 +48,7 @@ class CodeChecker
     when JAVASCRIPT
       output, offenses_count, success = run_eslint(repo_path)
     else
-      output         = "Unsupported language for check: #{@repository.language}"
-      offenses_count = 0
-      success        = false
+      output = "Unsupported language for check: #{@repository.language}"
     end
 
     Result.new(
@@ -88,32 +87,6 @@ class CodeChecker
     dir
   end
 
-  def sanitize_clone_url(raw_url)
-    url = raw_url.to_s.strip
-
-    # Поддерживаем стандартные GitHub HTTPS-URL
-    if url.start_with?('https://github.com/')
-      return url
-    end
-
-    # Поддерживаем SSH-формат git@github.com:user/repo.git
-    if url.start_with?('git@github.com:')
-      return url
-    end
-
-    # На всякий случай — базовая проверка через URI (для нестандартных, но валидных https-URL)
-    begin
-      uri = URI.parse(url)
-      if %w[http https].include?(uri.scheme) && uri.host == 'github.com'
-        return url
-      end
-    rescue URI::InvalidURIError
-      # упадём чуть ниже с ArgumentError
-    end
-
-    raise ArgumentError, 'Unsupported clone URL (only GitHub HTTPS/SSH URLs are allowed)'
-  end
-
   def current_commit_sha(repo_path)
     stdout, _stderr, status = Open3.capture3(
       'git', '-C', repo_path.to_s, 'rev-parse', 'HEAD'
@@ -134,22 +107,14 @@ class CodeChecker
 
     stdout, _stderr, status = Open3.capture3(*command, chdir: Rails.root.to_s)
 
-    offenses_count = 0
-
-    begin
-      data    = JSON.parse(stdout)
-      summary = data.fetch('summary', {})
-      offenses_count = summary.fetch('offense_count', 0).to_i
-    rescue JSON::ParserError
-    end
-
+    offenses_count = rubocop_offenses_count(stdout)
     success = status.success? && offenses_count.zero?
 
     [stdout, offenses_count, success]
   end
 
   def run_eslint(repo_path)
-    eslint_bin  = Rails.root.join('node_modules/.bin/eslint')
+    eslint_bin = Rails.root.join('node_modules/.bin/eslint')
     config_path = Rails.root.join('config/eslint/.eslintrc.json')
 
     command = [
@@ -162,14 +127,7 @@ class CodeChecker
 
     stdout, _stderr, status = Open3.capture3(*command, chdir: Rails.root.to_s)
 
-    offenses_count = 0
-
-    begin
-      data = JSON.parse(stdout)
-      offenses_count = data.sum { |file| file.fetch('messages', []).size }
-    rescue JSON::ParserError
-    end
-
+    offenses_count = eslint_offenses_count(stdout)
     success = status.success? && offenses_count.zero?
 
     [stdout, offenses_count, success]

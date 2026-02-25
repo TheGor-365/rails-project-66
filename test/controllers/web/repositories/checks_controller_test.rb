@@ -14,6 +14,14 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
+  def assert_latest_check_passed!(repo)
+    check = repo.checks.order(created_at: :desc).first
+
+    assert { check.finished? }
+    assert { check.status == 'passed' }
+    assert { check.passed == true }
+  end
+
   test 'guest is redirected from create' do
     user = User.create!(email: 'u1@example.com')
     repo = build_repo_for(user)
@@ -42,11 +50,7 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_redirected_to repository_path(repo)
-
-    check = repo.checks.order(created_at: :desc).first
-    assert { check.finished? }
-    assert { check.status == 'passed' }
-    assert { check.passed == true }
+    assert_latest_check_passed!(repo)
   end
 
   test 'show returns success for owner' do

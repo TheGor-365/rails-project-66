@@ -3,6 +3,15 @@
 require 'test_helper'
 
 class RepositoryCheckTest < ActiveSupport::TestCase
+  def assert_performed_check_fields!(check)
+    assert { check.finished? }
+    assert { check.status == 'passed' }
+    assert { check.passed == true }
+    assert { check.violations_count == 0 }
+    assert { check.commit_id == 'abc123' }
+    assert { check.output == 'rubocop stub output' }
+  end
+
   test 'perform! uses code_checker from container and updates fields' do
     user = User.create!(email: 'model-owner@example.com')
     repo = user.repositories.create!(
@@ -16,14 +25,8 @@ class RepositoryCheckTest < ActiveSupport::TestCase
 
     check = repo.checks.create!
     check.perform!(commit_id: 'abc123')
-
     check.reload
 
-    assert { check.finished? }
-    assert { check.status == 'passed' }
-    assert { check.passed == true }
-    assert { check.violations_count == 0 }
-    assert { check.commit_id == 'abc123' }
-    assert { check.output == 'rubocop stub output' }
+    assert_performed_check_fields!(check)
   end
 end
