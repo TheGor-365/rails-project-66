@@ -1,0 +1,64 @@
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+# В CI у них судя по предупреждениям используется require-стиль.
+require:
+  - rubocop-rails
+  - rubocop-performance
+  - rubocop-rspec
+  - rubocop-minitest
+  - rubocop-factory_bot
+  - rubocop-capybara
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  DisplayCopNames: true
+  TargetRubyVersion: 3.2
+  TargetRailsVersion: 7.2
+  Include:
+    - '**/*.rb'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'config.ru'
+    - '*.gemspec'
+  Exclude:
+    - 'bin/*'
+    - 'db/schema.rb'
+    - 'db/queue_schema.rb'
+    - 'db/cache_schema.rb'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+    - 'storage/**/*'
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+Layout/HashAlignment:
+  Enabled: true
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+Style/NumericPredicate:
+  Enabled: true
+
+Rails/RootPathnameMethods:
+  Enabled: true
+
+Lint/RedundantDirGlobSort:
+  Enabled: true
+
+Lint/UnusedMethodArgument:
+  Enabled: true
+
+Naming/PredicateMethod:
+  Enabled: true
+
+Style/OpenStructUse:
+  Enabled: true
