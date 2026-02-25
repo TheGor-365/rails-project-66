@@ -6,16 +6,15 @@ module Web
       before_action :require_login
       before_action :set_repository
 
+      def show
+        @check = @repository.checks.find(params[:id])
+        render :show, formats: [:html]
+      end
       def create
         @check = @repository.checks.create!
         @check.perform!
 
-        redirect_to repository_path(@repository), notice: t(".success", default: "Проверка запущена")
-      end
-
-      def show
-        @check = @repository.checks.find(params[:id])
-        render :show, formats: [ :html ]
+        redirect_to repository_path(@repository), notice: t('.success', default: 'Проверка запущена')
       end
 
       private

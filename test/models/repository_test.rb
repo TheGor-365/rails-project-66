@@ -1,10 +1,12 @@
-require "test_helper"
+# frozen_string_literal: true
+
+require 'test_helper'
 
 class RepositoryTest < ActiveSupport::TestCase
-  test "fixture is valid" do
+  test 'fixture is valid' do
     repo = repositories(:one)
 
     assert { repo.valid? }
-    assert { repo.language.to_s == "Ruby" }
+    assert { repo.language.to_s == 'Ruby' }
   end
 end

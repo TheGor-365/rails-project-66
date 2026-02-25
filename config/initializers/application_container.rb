@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require "dry/container"
-require "octokit"
+require 'dry/container'
+require 'octokit'
 
 class ApplicationContainer
   extend Dry::Container::Mixin

@@ -20,15 +20,15 @@ class Repository::Check < ApplicationRecord
   end
 
   AASM_LABELS = {
-    "pending"  => "Ожидает",
-    "running"  => "Выполняется",
-    "finished" => "Завершена"
+    'pending'  => 'Ожидает',
+    'running'  => 'Выполняется',
+    'finished' => 'Завершена'
   }.freeze
 
   RESULT_LABELS = {
-    "pending" => "Ожидает",
-    "passed"  => "Успешно",
-    "failed"  => "С ошибками"
+    'pending' => 'Ожидает',
+    'passed'  => 'Успешно',
+    'failed'  => 'С ошибками'
   }.freeze
 
   SHORT_SHA_LENGTH = 7
@@ -61,9 +61,9 @@ class Repository::Check < ApplicationRecord
     rescue StandardError => e
       update!(
         commit_id: commit_id,
-        status: "failed",
-        passed: false,
-        output: e.full_message(highlight: false, order: :top)
+        status:    'failed',
+        passed:    false,
+        output:    e.full_message(highlight: false, order: :top)
       )
       finish! if may_finish?
       notify_if_failed(nil)
@@ -74,15 +74,15 @@ class Repository::Check < ApplicationRecord
     ran_ok = result.success?
 
     passed = ran_ok && offenses_count.zero?
-    final_status = passed ? "passed" : "failed"
+    final_status = passed ? 'passed' : 'failed'
     stored_commit_id = result.commit_id.presence || commit_id
 
     update!(
-      commit_id: stored_commit_id,
-      output: result.output,
+      commit_id:        stored_commit_id,
+      output:           result.output,
       violations_count: offenses_count,
-      passed: passed,
-      status: final_status
+      passed:           passed,
+      status:           final_status
     )
 
     finish! if may_finish?
@@ -103,15 +103,15 @@ class Repository::Check < ApplicationRecord
     data = parsed_output
     return [] if data.blank?
 
-    if data.is_a?(Hash) && data["files"].is_a?(Array)
-      return data["files"].map do |file|
-        path     = file["path"]
-        offenses = Array(file["offenses"]).map do |offense|
+    if data.is_a?(Hash) && data['files'].is_a?(Array)
+      return data['files'].map do |file|
+        path     = file['path']
+        offenses = Array(file['offenses']).map do |offense|
           {
-            message: offense["message"],
-            rule:    offense["cop_name"],
-            line:    offense.dig("location", "line"),
-            column:  offense.dig("location", "column")
+            message: offense['message'],
+            rule:    offense['cop_name'],
+            line:    offense.dig('location', 'line'),
+            column:  offense.dig('location', 'column')
           }
         end
 
@@ -121,13 +121,13 @@ class Repository::Check < ApplicationRecord
 
     if data.is_a?(Array)
       return data.map do |file|
-        path     = file["filePath"] || file["path"]
-        offenses = Array(file["messages"]).map do |offense|
+        path     = file['filePath'] || file['path']
+        offenses = Array(file['messages']).map do |offense|
           {
-            message: offense["message"],
-            rule:    offense["ruleId"],
-            line:    offense["line"],
-            column:  offense["column"]
+            message: offense['message'],
+            rule:    offense['ruleId'],
+            line:    offense['line'],
+            column:  offense['column']
           }
         end
 

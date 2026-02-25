@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
-require "ostruct"
+require 'ostruct'
 
 class GithubClientStub
   class << self
     def repos(access_token:)
       @repos ||= [
         build_repo(
-          id: 9_100_001,
-          name: "rails-project",
-          full_name: "hexlet-basics/rails-project",
-          language: "Ruby"
+          id:        9_100_001,
+          name:      'rails-project',
+          full_name: 'hexlet-basics/rails-project',
+          language:  'Ruby'
         ),
         build_repo(
-          id: 9_100_002,
-          name: "frontend-check",
-          full_name: "hexlet-basics/frontend-check",
-          language: "JavaScript"
+          id:        9_100_002,
+          name:      'frontend-check',
+          full_name: 'hexlet-basics/frontend-check',
+          language:  'JavaScript'
         )
       ]
     end
@@ -29,10 +29,10 @@ class GithubClientStub
       return nil if normalized_id <= 0
 
       build_repo(
-        id: normalized_id,
-        name: "repo-#{normalized_id}",
+        id:        normalized_id,
+        name:      "repo-#{normalized_id}",
         full_name: "stub-user/repo-#{normalized_id}",
-        language: "Ruby"
+        language:  'Ruby'
       )
     end
 
@@ -47,12 +47,12 @@ class GithubClientStub
 
     def build_repo(id:, name:, full_name:, language:)
       OpenStruct.new(
-        id: id,
-        name: name,
+        id:        id,
+        name:      name,
         full_name: full_name,
-        language: language,
+        language:  language,
         clone_url: "https://github.com/#{full_name}.git",
-        ssh_url: "git@github.com:#{full_name}.git"
+        ssh_url:   "git@github.com:#{full_name}.git"
       )
     end
   end

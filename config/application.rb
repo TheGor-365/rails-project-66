@@ -1,12 +1,14 @@
-require_relative "boot"
+# frozen_string_literal: true
 
-require "rails/all"
+require_relative 'boot'
+
+require 'rails/all'
 
 Bundler.require(*Rails.groups)
 
-if %w[development test].include?(ENV.fetch("RAILS_ENV", "development"))
+if %w[development test].include?(ENV.fetch('RAILS_ENV', 'development'))
   begin
-    require "dotenv/load"
+    require 'dotenv/load'
   rescue LoadError
   end
 end
@@ -17,7 +19,7 @@ module RailsProject66
     config.autoload_lib(ignore: %w[assets tasks])
 
     routes.default_url_options = {
-      host: ENV.fetch("BASE_URL", "http://localhost:3000")
+      host: ENV.fetch('BASE_URL', 'http://localhost:3000')
     }
   end
 end

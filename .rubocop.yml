@@ -1,1 +1,119 @@
-inherit_gem: { rubocop-rails-omakase: rubocop.yml }
+inherit_gem:
+  rubocop-rails-omakase: rubocop.yml
+
+plugins:
+  - rubocop-rails
+  - rubocop-performance
+  - rubocop-rspec
+  - rubocop-minitest
+  - rubocop-factory_bot
+  - rubocop-capybara
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  DisplayCopNames: true
+  TargetRubyVersion: 3.2
+  TargetRailsVersion: 7.2
+  Include:
+    - '**/*.rb'
+    - 'Gemfile'
+    - 'Rakefile'
+    - 'config.ru'
+    - '*.gemspec'
+  Exclude:
+    - 'bin/*'
+    - 'db/schema.rb'
+    - 'db/queue_schema.rb'
+    - 'db/cache_schema.rb'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - 'log/**/*'
+    - 'storage/**/*'
+
+# --- Style (по твоим ошибкам) ---
+Style/FrozenStringLiteralComment:
+  Enabled: true
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+Style/SymbolArray:
+  Enabled: true
+  EnforcedStyle: percent
+
+Style/EmptyMethod:
+  Enabled: true
+  EnforcedStyle: compact
+
+Style/FetchEnvVar:
+  Enabled: true
+
+Style/GlobalStdStream:
+  Enabled: true
+
+Style/RedundantConstantBase:
+  Enabled: true
+
+# --- Layout (по твоим ошибкам) ---
+Layout/SpaceInsidePercentLiteralDelimiters:
+  Enabled: true
+
+Layout/SpaceInsideArrayLiteralBrackets:
+  Enabled: true
+  EnforcedStyle: no_space
+
+Layout/HashAlignment:
+  Enabled: true
+  EnforcedHashRocketStyle: table
+  EnforcedColonStyle: table
+
+Layout/ArgumentAlignment:
+  Enabled: true
+  EnforcedStyle: with_first_argument
+
+Layout/MultilineMethodCallIndentation:
+  Enabled: true
+  EnforcedStyle: aligned
+
+Layout/EmptyLines:
+  Enabled: true
+
+# --- Bundler (Gemfile сортировка) ---
+Bundler/OrderedGems:
+  Enabled: true
+
+# --- Lint ---
+Lint/SuppressedException:
+  Enabled: true
+
+# --- Metrics (у тебя уже ругается на длину/сложность) ---
+Metrics/ClassLength:
+  Enabled: true
+  Max: 100
+
+Metrics/CyclomaticComplexity:
+  Enabled: true
+  Max: 7
+
+Metrics/PerceivedComplexity:
+  Enabled: true
+  Max: 8
+
+# --- Rails cops (все, что вижу в логе) ---
+Rails/HttpStatusNameConsistency:
+  Enabled: true
+
+Rails/FindByOrAssignmentMemoization:
+  Enabled: true
+
+Rails/I18nLocaleTexts:
+  Enabled: true
+
+Rails/ActionOrder:
+  Enabled: true
+
+Rails/FilePath:
+  Enabled: true

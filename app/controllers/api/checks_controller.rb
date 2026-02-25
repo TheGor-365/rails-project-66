@@ -8,8 +8,8 @@ class Api::ChecksController < ApplicationController
 
     data = JSON.parse(payload)
 
-    github_repo_id = data.dig("repository", "id")
-    commit_id      = data["after"]
+    github_repo_id = data.dig('repository', 'id')
+    commit_id      = data['after']
 
     repository = Repository.find_by!(github_id: github_repo_id)
 
@@ -20,6 +20,6 @@ class Api::ChecksController < ApplicationController
   rescue ActiveRecord::RecordNotFound
     head :not_found
   rescue JSON::ParserError
-    head :unprocessable_entity
+    head :unprocessable_content
   end
 end

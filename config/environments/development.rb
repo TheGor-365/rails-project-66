@@ -1,4 +1,6 @@
-require "active_support/core_ext/integer/time"
+# frozen_string_literal: true
+
+require 'active_support/core_ext/integer/time'
 
 Rails.application.configure do
   config.enable_reloading = true
@@ -6,11 +8,11 @@ Rails.application.configure do
   config.consider_all_requests_local = true
   config.server_timing = true
 
-  if Rails.root.join("tmp/caching-dev.txt").exist?
+  if Rails.root.join('tmp/caching-dev.txt').exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
     config.cache_store = :memory_store
-    config.public_file_server.headers = { "Cache-Control" => "public, max-age=#{2.days.to_i}" }
+    config.public_file_server.headers = { 'Cache-Control' => "public, max-age=#{2.days.to_i}" }
   else
     config.action_controller.perform_caching = false
     config.cache_store = :null_store
@@ -18,14 +20,14 @@ Rails.application.configure do
 
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    user_name: ENV.fetch("MAILTRAP_USERNAME", nil),
-    password:  ENV.fetch("MAILTRAP_PASSWORD", nil),
-    address:   "sandbox.smtp.mailtrap.io",
-    domain:    "sandbox.smtp.mailtrap.io",
-    port:      2525,
+    user_name:      ENV.fetch('MAILTRAP_USERNAME', nil),
+    password:       ENV.fetch('MAILTRAP_PASSWORD', nil),
+    address:        'sandbox.smtp.mailtrap.io',
+    domain:         'sandbox.smtp.mailtrap.io',
+    port:           2525,
     authentication: :cram_md5
   }
 

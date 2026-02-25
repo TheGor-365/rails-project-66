@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require "octokit"
+require 'octokit'
 
 class GithubClient
   class << self
@@ -13,10 +13,10 @@ class GithubClient
     end
 
     def create_webhook(access_token:, repo_full_name:, webhook_url:)
-      config = { url: webhook_url, content_type: "json" }
-      options = { events: [ "push" ], active: true }
+      config = { url: webhook_url, content_type: 'json' }
+      options = { events: ['push'], active: true }
 
-      client(access_token).create_hook(repo_full_name, "web", config, options)
+      client(access_token).create_hook(repo_full_name, 'web', config, options)
     end
 
     private
