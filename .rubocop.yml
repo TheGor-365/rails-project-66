@@ -32,7 +32,7 @@ AllCops:
     - 'log/**/*'
     - 'storage/**/*'
 
-# --- Style (по твоим ошибкам) ---
+# --- Style ---
 Style/FrozenStringLiteralComment:
   Enabled: true
 
@@ -57,13 +57,20 @@ Style/GlobalStdStream:
 Style/RedundantConstantBase:
   Enabled: true
 
-# --- Layout (по твоим ошибкам) ---
+Style/NumericPredicate:
+  Enabled: true
+
+Style/OpenStructUse:
+  Enabled: true
+
+# --- Layout ---
 Layout/SpaceInsidePercentLiteralDelimiters:
   Enabled: true
 
+# ВАЖНО: CI ожидает пробелы внутри []
 Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: true
-  EnforcedStyle: no_space
+  EnforcedStyle: space
 
 Layout/HashAlignment:
   Enabled: true
@@ -81,7 +88,10 @@ Layout/MultilineMethodCallIndentation:
 Layout/EmptyLines:
   Enabled: true
 
-# --- Bundler (Gemfile сортировка) ---
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+
+# --- Bundler ---
 Bundler/OrderedGems:
   Enabled: true
 
@@ -89,7 +99,17 @@ Bundler/OrderedGems:
 Lint/SuppressedException:
   Enabled: true
 
-# --- Metrics (у тебя уже ругается на длину/сложность) ---
+Lint/UnusedMethodArgument:
+  Enabled: true
+
+Lint/RedundantDirGlobSort:
+  Enabled: true
+
+# --- Naming ---
+Naming/PredicateMethod:
+  Enabled: true
+
+# --- Metrics ---
 Metrics/ClassLength:
   Enabled: true
   Max: 100
@@ -102,7 +122,7 @@ Metrics/PerceivedComplexity:
   Enabled: true
   Max: 8
 
-# --- Rails cops (все, что вижу в логе) ---
+# --- Rails ---
 Rails/HttpStatusNameConsistency:
   Enabled: true
 
@@ -116,4 +136,7 @@ Rails/ActionOrder:
   Enabled: true
 
 Rails/FilePath:
+  Enabled: true
+
+Rails/RootPathnameMethods:
   Enabled: true
