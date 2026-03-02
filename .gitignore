@@ -34,3 +34,6 @@
 # SQLite (test)
 db/*.sqlite3
 db/*.sqlite3-*
+
+# local tooling
+.tmp/
