@@ -18,8 +18,3 @@ module ActiveSupport
     fixtures :all
   end
 end
-
-# Make auth helpers available for all tests (controller/integration/etc.)
-class ActiveSupport::TestCase
-  include AuthHelpers
-end

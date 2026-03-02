@@ -7,8 +7,7 @@ class GithubClientStub
     :full_name,
     :language,
     :clone_url,
-    :ssh_url,
-    keyword_init: true
+    :ssh_url
   )
 
   def self.repos(**)

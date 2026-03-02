@@ -17,8 +17,7 @@ class CodeChecker
     :commit_id,
     :output,
     :offenses_count,
-    :success,
-    keyword_init: true
+    :success
   ) do
     def success?
       !!success
