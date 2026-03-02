@@ -25,7 +25,3 @@ module AuthHelpers
     User.find_by!(email: email)
   end
 end
-
-class ActionDispatch::IntegrationTest
-  include AuthHelpers
-end
