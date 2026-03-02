@@ -8,7 +8,7 @@ module Web
 
       def show
         @check = @repository.checks.find(params[:id])
-        render :show, formats: [ :html ]
+        render :show, formats: [:html]
       end
 
       def create

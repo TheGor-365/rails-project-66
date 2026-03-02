@@ -8,13 +8,13 @@ module AuthHelpers
     OmniAuth.config.test_mode = true
 
     OmniAuth.config.mock_auth[:github] = OmniAuth::AuthHash.new(
-      provider:    'github',
-      uid:         '123',
-      info:        {
-        email:    email,
+      provider: 'github',
+      uid: '123',
+      info: {
+        email: email,
         nickname: 'tester',
-        name:     'Tester',
-        image:    'http://example.com/avatar.png'
+        name: 'Tester',
+        image: 'http://example.com/avatar.png'
       },
       credentials: { token: token }
     )

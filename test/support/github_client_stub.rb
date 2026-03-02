@@ -14,20 +14,20 @@ class GithubClientStub
   def self.repos(**)
     [
       RepoStub.new(
-        id:        9_100_001,
-        name:      'rails-project',
+        id: 9_100_001,
+        name: 'rails-project',
         full_name: 'TheGor-365/rails-project',
-        language:  'Ruby',
+        language: 'Ruby',
         clone_url: 'https://github.com/TheGor-365/rails-project.git',
-        ssh_url:   'git@github.com:TheGor-365/rails-project.git'
+        ssh_url: 'git@github.com:TheGor-365/rails-project.git'
       ),
       RepoStub.new(
-        id:        9_100_002,
-        name:      'frontend-check',
+        id: 9_100_002,
+        name: 'frontend-check',
         full_name: 'TheGor-365/frontend-check',
-        language:  'JavaScript',
+        language: 'JavaScript',
         clone_url: 'https://github.com/TheGor-365/frontend-check.git',
-        ssh_url:   'git@github.com:TheGor-365/frontend-check.git'
+        ssh_url: 'git@github.com:TheGor-365/frontend-check.git'
       )
     ]
   end
@@ -37,12 +37,12 @@ class GithubClientStub
     full_name = "TheGor-365/repo-#{normalized_id}"
 
     RepoStub.new(
-      id:        normalized_id,
-      name:      "repo-#{normalized_id}",
+      id: normalized_id,
+      name: "repo-#{normalized_id}",
       full_name: full_name,
-      language:  'Ruby',
+      language: 'Ruby',
       clone_url: "https://github.com/#{full_name}.git",
-      ssh_url:   "git@github.com:#{full_name}.git"
+      ssh_url: "git@github.com:#{full_name}.git"
     )
   end
 

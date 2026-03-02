@@ -7,11 +7,11 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     user = User.create!(email: 'api-owner@example.com')
     user.repositories.create!(
       github_id: github_id,
-      name:      'example',
+      name: 'example',
       full_name: 'TheGor-365/example',
-      language:  'Ruby',
+      language: 'Ruby',
       clone_url: 'https://github.com/TheGor-365/example.git',
-      ssh_url:   'git@github.com:TheGor-365/example.git'
+      ssh_url: 'git@github.com:TheGor-365/example.git'
     )
   end
 
@@ -30,12 +30,12 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
 
     payload = {
       'repository' => { 'id' => repo.github_id, 'full_name' => repo.full_name },
-      'after'      => 'abc123def456'
+      'after' => 'abc123def456'
     }
 
     assert_difference -> { repo.checks.count }, 1 do
       post api_checks_path,
-           params:  payload.to_json,
+           params: payload.to_json,
            headers: { 'CONTENT_TYPE' => 'application/json' }
     end
 
@@ -47,7 +47,7 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     payload = { 'repository' => { 'id' => 999_999 }, 'after' => 'x' }
 
     post api_checks_path,
-         params:  payload.to_json,
+         params: payload.to_json,
          headers: { 'CONTENT_TYPE' => 'application/json' }
 
     assert_response :not_found

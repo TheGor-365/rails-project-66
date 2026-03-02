@@ -21,15 +21,15 @@ class Repository::Check < ApplicationRecord
   end
 
   AASM_LABELS = {
-    'pending'  => 'Ожидает',
-    'running'  => 'Выполняется',
+    'pending' => 'Ожидает',
+    'running' => 'Выполняется',
     'finished' => 'Завершена'
   }.freeze
 
   RESULT_LABELS = {
     'pending' => 'Ожидает',
-    'passed'  => 'Успешно',
-    'failed'  => 'С ошибками'
+    'passed' => 'Успешно',
+    'failed' => 'С ошибками'
   }.freeze
 
   SHORT_SHA_LENGTH = 7
@@ -68,17 +68,17 @@ class Repository::Check < ApplicationRecord
 
   def run_code_checker(commit_id)
     code_checker = ApplicationContainer[:code_checker]
-    [ code_checker.run(repository: repository, commit_id: commit_id), nil ]
+    [code_checker.run(repository: repository, commit_id: commit_id), nil]
   rescue StandardError => e
-    [ nil, e ]
+    [nil, e]
   end
 
   def handle_failed_check_run!(commit_id, error)
     update!(
       commit_id: commit_id,
-      status:    'failed',
-      passed:    false,
-      output:    error.full_message(highlight: false, order: :top)
+      status: 'failed',
+      passed: false,
+      output: error.full_message(highlight: false, order: :top)
     )
 
     finalize_check!(passed: false, offenses_count: nil)
@@ -93,11 +93,11 @@ class Repository::Check < ApplicationRecord
     stored_commit_id = result.commit_id.presence || fallback_commit_id
 
     update!(
-      commit_id:        stored_commit_id,
-      output:           result.output,
+      commit_id: stored_commit_id,
+      output: result.output,
       violations_count: offenses_count,
-      passed:           passed,
-      status:           final_status
+      passed: passed,
+      status: final_status
     )
 
     { passed:, offenses_count: }

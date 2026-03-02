@@ -7,7 +7,7 @@ class CheckMailer < ApplicationMailer
     @user       = @repository.user
 
     mail(
-      to:      @user.email,
+      to: @user.email,
       subject: "Результат проверки репозитория #{@repository.full_name}"
     )
   end

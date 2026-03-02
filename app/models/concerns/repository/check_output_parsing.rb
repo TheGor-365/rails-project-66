@@ -27,7 +27,7 @@ module Repository::CheckOutputParsing
   def rubocop_offenses_by_file(data)
     data['files'].map do |file|
       {
-        path:     file['path'],
+        path: file['path'],
         offenses: rubocop_file_offenses(file)
       }
     end
@@ -37,9 +37,9 @@ module Repository::CheckOutputParsing
     Array(file['offenses']).map do |offense|
       {
         message: offense['message'],
-        rule:    offense['cop_name'],
-        line:    offense.dig('location', 'line'),
-        column:  offense.dig('location', 'column')
+        rule: offense['cop_name'],
+        line: offense.dig('location', 'line'),
+        column: offense.dig('location', 'column')
       }
     end
   end
@@ -47,7 +47,7 @@ module Repository::CheckOutputParsing
   def eslint_offenses_by_file(data)
     data.map do |file|
       {
-        path:     file['filePath'] || file['path'],
+        path: file['filePath'] || file['path'],
         offenses: eslint_file_offenses(file)
       }
     end
@@ -57,9 +57,9 @@ module Repository::CheckOutputParsing
     Array(file['messages']).map do |offense|
       {
         message: offense['message'],
-        rule:    offense['ruleId'],
-        line:    offense['line'],
-        column:  offense['column']
+        rule: offense['ruleId'],
+        line: offense['line'],
+        column: offense['column']
       }
     end
   end

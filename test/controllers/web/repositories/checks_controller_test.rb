@@ -6,11 +6,11 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
   def build_repo_for(user)
     user.repositories.create!(
       github_id: 10,
-      name:      'example',
+      name: 'example',
       full_name: 'TheGor-365/example',
-      language:  'Ruby',
+      language: 'Ruby',
       clone_url: 'https://github.com/TheGor-365/example.git',
-      ssh_url:   'git@github.com:TheGor-365/example.git'
+      ssh_url: 'git@github.com:TheGor-365/example.git'
     )
   end
 

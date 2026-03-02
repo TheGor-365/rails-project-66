@@ -15,7 +15,7 @@ Rails.application.configure do
       []
     end
 
-  config.action_dispatch.trusted_proxies = default_trusted + [ IPAddr.new('100.64.0.0/10') ]
+  config.action_dispatch.trusted_proxies = default_trusted + [IPAddr.new('100.64.0.0/10')]
   config.action_controller.forgery_protection_origin_check = false
 
   config.assets.compile = false
@@ -29,7 +29,7 @@ Rails.application.configure do
                                        .tap  { |logger| logger.formatter = Logger::Formatter.new }
                                        .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
 
-  config.log_tags = [ :request_id ]
+  config.log_tags = [:request_id]
   config.log_level = ENV.fetch('RAILS_LOG_LEVEL', 'info')
   config.action_mailer.perform_caching = false
   config.action_mailer.perform_deliveries = false
@@ -37,7 +37,7 @@ Rails.application.configure do
   config.i18n.fallbacks = true
   config.active_support.report_deprecations = false
   config.active_record.dump_schema_after_migration = false
-  config.active_record.attributes_for_inspect = [ :id ]
+  config.active_record.attributes_for_inspect = [:id]
 
   app_host = ENV['APP_HOST'].to_s.strip
   app_protocol = ENV['APP_PROTOCOL'].to_s.strip

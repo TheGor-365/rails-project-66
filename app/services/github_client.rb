@@ -14,7 +14,7 @@ class GithubClient
 
     def create_webhook(access_token:, repo_full_name:, webhook_url:)
       config = { url: webhook_url, content_type: 'json' }
-      options = { events: [ 'push' ], active: true }
+      options = { events: ['push'], active: true }
 
       client(access_token).create_hook(repo_full_name, 'web', config, options)
     end

@@ -1,8 +1,7 @@
 inherit_gem:
   rubocop-rails-omakase: rubocop.yml
 
-# В CI у них судя по предупреждениям используется require-стиль.
-require:
+plugins:
   - rubocop-rails
   - rubocop-performance
   - rubocop-rspec
@@ -37,28 +36,11 @@ Style/StringLiterals:
   Enabled: true
   EnforcedStyle: single_quotes
 
-Layout/EmptyLineBetweenDefs:
+Layout/SpaceInsideArrayLiteralBrackets:
   Enabled: true
+  EnforcedStyle: no_space
 
 Layout/HashAlignment:
   Enabled: true
-  EnforcedHashRocketStyle: table
-  EnforcedColonStyle: table
-
-Style/NumericPredicate:
-  Enabled: true
-
-Rails/RootPathnameMethods:
-  Enabled: true
-
-Lint/RedundantDirGlobSort:
-  Enabled: true
-
-Lint/UnusedMethodArgument:
-  Enabled: true
-
-Naming/PredicateMethod:
-  Enabled: true
-
-Style/OpenStructUse:
-  Enabled: true
+  EnforcedHashRocketStyle: key
+  EnforcedColonStyle: key

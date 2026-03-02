@@ -11,10 +11,10 @@ class CodeCheckerStub
     _ = repository # интерфейс совместим
 
     Result.new(
-      commit_id:      commit_id || 'stub-commit-sha',
-      output:         'rubocop stub output',
+      commit_id: commit_id || 'stub-commit-sha',
+      output: 'rubocop stub output',
       offenses_count: 0,
-      success:        true
+      success: true
     )
   end
 end

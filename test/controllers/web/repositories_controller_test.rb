@@ -19,11 +19,11 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
     user = User.create!(email: 'u1@example.com')
     repo = user.repositories.create!(
       github_id: 10,
-      name:      'r',
+      name: 'r',
       full_name: 'x/y',
-      language:  'Ruby',
+      language: 'Ruby',
       clone_url: 'https://example.com/r.git',
-      ssh_url:   'git@example.com:r.git'
+      ssh_url: 'git@example.com:r.git'
     )
 
     get repository_path(repo)
@@ -60,11 +60,11 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
 
     repo = user.repositories.create!(
       github_id: 10,
-      name:      'example',
+      name: 'example',
       full_name: 'TheGor-365/example',
-      language:  'Ruby',
+      language: 'Ruby',
       clone_url: 'https://github.com/TheGor-365/example.git',
-      ssh_url:   'git@github.com:TheGor-365/example.git'
+      ssh_url: 'git@github.com:TheGor-365/example.git'
     )
 
     get repository_path(repo)
@@ -78,11 +78,11 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
     owner2 = User.create!(email: 'owner2@example.com')
     repo2 = owner2.repositories.create!(
       github_id: 99,
-      name:      'r2',
+      name: 'r2',
       full_name: 'x/y2',
-      language:  'Ruby',
+      language: 'Ruby',
       clone_url: 'https://example.com/r2.git',
-      ssh_url:   'git@example.com:r2.git'
+      ssh_url: 'git@example.com:r2.git'
     )
 
     get repository_path(repo2)
