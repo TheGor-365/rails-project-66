@@ -15,6 +15,13 @@ module ActiveSupport
   class TestCase
     parallelize(workers: :number_of_processors)
 
+set_fixture_class(
+  {
+    repository_checks: Check,
+    'repository/checks' => Check
+  }
+)
+
     fixtures :all
   end
 end

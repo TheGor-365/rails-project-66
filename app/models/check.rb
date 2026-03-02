@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-class Repository::Check < ApplicationRecord
+class Check < ApplicationRecord
+  self.table_name = 'repository_checks'
+
   include AASM
   include Repository::CheckOutputParsing
 
