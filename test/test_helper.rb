@@ -16,5 +16,12 @@ module ActiveSupport
     parallelize(workers: :number_of_processors)
 
     fixtures :all
+
+# Nested fixtures like test/fixtures/repository/checks.yml are named "repository/checks".
+# Without explicit mapping Rails may treat association keys (repository: one) as raw columns.
+set_fixture_class(
+  'repository/checks' => 'RepositoryCheck',
+  repository_checks: 'RepositoryCheck'
+)
   end
 end
