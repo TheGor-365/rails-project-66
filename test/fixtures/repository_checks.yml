@@ -1,0 +1,19 @@
+one:
+  repository_id: <%= ActiveRecord::FixtureSet.identify(:one) %>
+  status: finished
+  commit_id: abc123
+  passed: true
+  violations_count: 0
+  output: "rubocop passed"
+  created_at: <%= Time.utc(2020, 1, 1, 0, 0, 0) %>
+  updated_at: <%= Time.utc(2020, 1, 1, 0, 0, 0) %>
+
+two:
+  repository_id: <%= ActiveRecord::FixtureSet.identify(:one) %>
+  status: failed
+  commit_id: def456
+  passed: false
+  violations_count: 5
+  output: "rubocop reported 5 offenses"
+  created_at: <%= Time.utc(2020, 1, 2, 0, 0, 0) %>
+  updated_at: <%= Time.utc(2020, 1, 2, 0, 0, 0) %>
