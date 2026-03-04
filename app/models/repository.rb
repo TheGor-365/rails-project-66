@@ -16,9 +16,8 @@ class Repository < ApplicationRecord
   def last_check
     checks.order(created_at: :desc).first
   end
-  
+
   private
-  
 
   def normalize_language
     return if language.blank?
