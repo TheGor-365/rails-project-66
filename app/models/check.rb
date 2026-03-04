@@ -22,25 +22,12 @@ class Check < ApplicationRecord
     end
   end
 
-  AASM_LABELS = {
-    'pending' => 'Ожидает',
-    'running' => 'Выполняется',
-    'finished' => 'Завершена'
-  }.freeze
-
-  RESULT_LABELS = {
-    'pending' => 'Ожидает',
-    'passed' => 'Успешно',
-    'failed' => 'С ошибками'
-  }.freeze
-
   SHORT_SHA_LENGTH = 7
+def human_status
+  return I18n.t("checks.aasm_state.#{aasm_state}", default: aasm_state.to_s) unless finished?
 
-  def human_status
-    return AASM_LABELS[aasm_state] || aasm_state unless finished?
-
-    RESULT_LABELS[status] || status
-  end
+  I18n.t("checks.result_status.#{status}", default: status.to_s)
+end
 
   def short_commit_id
     return if commit_id.blank?

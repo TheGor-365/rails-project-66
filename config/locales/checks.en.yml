@@ -1,0 +1,10 @@
+en:
+  checks:
+    aasm_state:
+      pending: "Pending"
+      running: "Running"
+      finished: "Finished"
+    result_status:
+      pending: "Pending"
+      passed: "Passed"
+      failed: "Failed"

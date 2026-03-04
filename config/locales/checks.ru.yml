@@ -1,0 +1,10 @@
+ru:
+  checks:
+    aasm_state:
+      pending: "Ожидает"
+      running: "Выполняется"
+      finished: "Завершена"
+    result_status:
+      pending: "Ожидает"
+      passed: "Успешно"
+      failed: "С ошибками"
