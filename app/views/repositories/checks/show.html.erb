@@ -11,6 +11,9 @@
 
       <h1>Проверка #<%= @check.id %></h1>
 
+<% short = check_short_commit_id(@check) %>
+<% url = check_github_commit_url(@check) %>
+
       <table class="table">
         <tr>
           <td>Дата создания</td>
@@ -35,12 +38,12 @@
         <tr>
           <td>ID коммита</td>
           <td>
-            <% if @check.short_commit_id.present? && @check.github_commit_url.present? %>
-              <%= link_to @check.short_commit_id,
-                          @check.github_commit_url,
-                          target: "_blank",
-                          rel: "noopener" %>
-            <% end %>
+            <% if short.present? && url.present? %>
+  <%= link_to short,
+              url,
+              target: "_blank",
+              rel: "noopener" %>
+<% end %>
           </td>
         </tr>
       </table>
@@ -62,7 +65,7 @@
                 <td colspan="3">
                   <% if @check.short_commit_id.present? && file[:path].present? %>
                     <%= link_to file[:path],
-                                "https://github.com/#{@repository.full_name}/tree/#{@check.short_commit_id}/#{file[:path]}",
+                                "https://github.com/#{@repository.full_name}/tree/#{short}/#{file[:path]}",
                                 target: "_blank",
                                 rel: "noopener" %>
                   <% else %>

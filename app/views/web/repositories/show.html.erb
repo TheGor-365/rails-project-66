@@ -14,9 +14,10 @@
     <% checks.each do |check| %>
       <li>
         <%= check.status %>
-        <% if check.respond_to?(:short_commit_id) && check.short_commit_id.present? %>
-          (<%= check.short_commit_id %>)
-        <% end %>
+        <% short = check_short_commit_id(check) %>
+<% if short.present? %>
+  (<%= short %>)
+<% end %>
       </li>
     <% end %>
   </ul>

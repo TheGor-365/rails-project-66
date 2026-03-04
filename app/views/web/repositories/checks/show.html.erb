@@ -3,9 +3,10 @@
 <% if defined?(@check) && @check.present? %>
   <p>Status: <strong><%= @check.status %></strong></p>
 
-  <% if @check.respond_to?(:short_commit_id) && @check.short_commit_id.present? %>
-    <p>Commit: <%= @check.short_commit_id %></p>
-  <% end %>
+  <% short = check_short_commit_id(@check) %>
+<% if short.present? %>
+  <p>Commit: <%= short %></p>
+<% end %>
 
   <% if @check.output.present? %>
     <pre><%= @check.output %></pre>
