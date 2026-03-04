@@ -23,11 +23,12 @@ class Check < ApplicationRecord
   end
 
   SHORT_SHA_LENGTH = 7
-def human_status
-  return I18n.t("checks.aasm_state.#{aasm_state}", default: aasm_state.to_s) unless finished?
+  
+  def human_status
+    return I18n.t("checks.aasm_state.#{aasm_state}", default: aasm_state.to_s) unless finished?
 
-  I18n.t("checks.result_status.#{status}", default: status.to_s)
-end
+    I18n.t("checks.result_status.#{status}", default: status.to_s)
+  end
 
   def short_commit_id
     return if commit_id.blank?
