@@ -4,6 +4,7 @@ ru:
       pending: "Ожидает"
       running: "Выполняется"
       finished: "Завершена"
+      failed: "Ошибка"
     result_status:
       pending: "Ожидает"
       passed: "Успешно"

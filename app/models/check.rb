@@ -12,6 +12,7 @@ class Check < ApplicationRecord
     state :pending, initial: true
     state :running
     state :finished
+    state :failed
 
     event :run_check do
       transitions from: :pending, to: :running
@@ -20,10 +21,14 @@ class Check < ApplicationRecord
     event :finish do
       transitions from: :running, to: :finished
     end
+
+    event :fail do
+      transitions from: :running, to: :failed
+    end
   end
 
   SHORT_SHA_LENGTH = 7
-  
+
   def human_status
     return I18n.t("checks.aasm_state.#{aasm_state}", default: aasm_state.to_s) unless finished?
 
@@ -71,7 +76,8 @@ class Check < ApplicationRecord
       output: error.full_message(highlight: false, order: :top)
     )
 
-    finalize_check!(passed: false, offenses_count: nil)
+    fail! if may_fail?
+    notify_if_failed(nil)
 
     self
   end

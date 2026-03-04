@@ -4,6 +4,7 @@ en:
       pending: "Pending"
       running: "Running"
       finished: "Finished"
+      failed: "Failed"
     result_status:
       pending: "Pending"
       passed: "Passed"
