@@ -8,7 +8,7 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
       github_id: 10,
       name: 'example',
       full_name: 'TheGor-365/example',
-      language: 'Ruby',
+      language: 'ruby',
       clone_url: 'https://github.com/TheGor-365/example.git',
       ssh_url: 'git@github.com:TheGor-365/example.git'
     )

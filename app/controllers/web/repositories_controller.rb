@@ -50,7 +50,7 @@ module Web
         github_id: github_repo.id,
         name: github_repo.name,
         full_name: github_repo.full_name,
-        language: github_repo.language,
+        language: github_repo.language.to_s.downcase,
         clone_url: github_repo.clone_url,
         ssh_url: github_repo.ssh_url
       )

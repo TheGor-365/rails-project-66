@@ -1,0 +1,6 @@
+ru:
+  enumerize:
+    repository:
+      language:
+        ruby: Ruby
+        javascript: JavaScript

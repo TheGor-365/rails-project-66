@@ -10,8 +10,8 @@ require 'pathname'
 class CodeChecker
   include CodeChecker::Support
 
-  RUBY       = 'Ruby'
-  JAVASCRIPT = 'JavaScript'
+  RUBY       = 'ruby'
+  JAVASCRIPT = 'javascript'
 
   Result = Struct.new(
     :commit_id,

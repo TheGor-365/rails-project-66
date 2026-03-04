@@ -21,7 +21,7 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
       github_id: 10,
       name: 'r',
       full_name: 'x/y',
-      language: 'Ruby',
+      language: 'ruby',
       clone_url: 'https://example.com/r.git',
       ssh_url: 'git@example.com:r.git'
     )
@@ -62,7 +62,7 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
       github_id: 10,
       name: 'example',
       full_name: 'TheGor-365/example',
-      language: 'Ruby',
+      language: 'ruby',
       clone_url: 'https://github.com/TheGor-365/example.git',
       ssh_url: 'git@github.com:TheGor-365/example.git'
     )
@@ -80,7 +80,7 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
       github_id: 99,
       name: 'r2',
       full_name: 'x/y2',
-      language: 'Ruby',
+      language: 'ruby',
       clone_url: 'https://example.com/r2.git',
       ssh_url: 'git@example.com:r2.git'
     )

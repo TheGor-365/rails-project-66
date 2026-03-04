@@ -10,7 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_02_01_153329) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_04_181040) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "repositories", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "github_id"
@@ -21,6 +24,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_01_153329) do
     t.string "ssh_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["user_id", "github_id"], name: "index_repositories_on_user_id_and_github_id", unique: true
     t.index ["user_id"], name: "index_repositories_on_user_id"
   end
 
@@ -28,7 +32,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_02_01_153329) do
     t.bigint "repository_id", null: false
     t.string "status", default: "pending", null: false
     t.string "commit_id"
-    t.boolean "passed"
+    t.boolean "passed", default: false, null: false
     t.integer "violations_count"
     t.text "output"
     t.datetime "created_at", null: false

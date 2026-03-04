@@ -6,7 +6,9 @@ class Repository < ApplicationRecord
   belongs_to :user
   has_many :checks, dependent: :destroy
 
-  enumerize :language, in: %w[Ruby JavaScript], predicates: true
+  enumerize :language, in: %w[ruby javascript], predicates: true
+
+  before_validation :normalize_language
 
   validates :github_id, presence: true, uniqueness: { scope: :user_id }
   validates :name, :full_name, :clone_url, :ssh_url, presence: true
@@ -14,4 +16,11 @@ class Repository < ApplicationRecord
   def last_check
     checks.order(created_at: :desc).first
   end
+private
+
+def normalize_language
+  return if language.blank?
+
+  self.language = language.to_s.downcase
+end
 end

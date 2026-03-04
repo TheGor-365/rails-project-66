@@ -19,7 +19,7 @@
           <% @repositories.each do |repository| %>
             <tr>
               <td><%= link_to repository.full_name, repository_path(repository) %></td>
-              <td><%= repository.language %></td>
+              <td><%= repository.language_text %></td>
               <td>
                 <% if repository.last_check.present? %>
                   <%= repository.last_check.human_status %>

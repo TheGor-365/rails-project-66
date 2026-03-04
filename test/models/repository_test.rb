@@ -7,6 +7,6 @@ class RepositoryTest < ActiveSupport::TestCase
     repo = repositories(:one)
 
     assert { repo.valid? }
-    assert { repo.language.to_s == 'Ruby' }
+    assert { repo.language.to_s == 'ruby' }
   end
 end
