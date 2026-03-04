@@ -14,7 +14,7 @@ class Api::ChecksController < ApplicationController
     repository = Repository.find_by!(github_id: github_repo_id)
 
     check = repository.checks.create!(status: :pending)
-    check.perform!(commit_id: commit_id)
+    RunRepositoryCheckJob.perform_now(check.id, commit_id)
 
     head :ok
   rescue ActiveRecord::RecordNotFound

@@ -13,7 +13,7 @@ module Web
 
       def create
         @check = @repository.checks.create!
-        @check.perform!
+        RunRepositoryCheckJob.perform_now(@check.id)
 
         redirect_to repository_path(@repository), notice: t('.success', default: 'Проверка запущена')
       end

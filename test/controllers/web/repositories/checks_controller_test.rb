@@ -57,7 +57,7 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
     user = sign_in!
     repo = build_repo_for(user)
     check = repo.checks.create!
-    check.perform!(commit_id: 'abc123')
+    RunRepositoryCheckJob.perform_now(check.id, 'abc123')
 
     get repository_check_path(repo, check)
 

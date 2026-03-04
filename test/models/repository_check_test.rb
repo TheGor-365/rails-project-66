@@ -24,7 +24,7 @@ class RepositoryCheckTest < ActiveSupport::TestCase
     )
 
     check = repo.checks.create!
-    check.perform!(commit_id: 'abc123')
+    RunRepositoryCheckJob.perform_now(check.id, 'abc123')
     check.reload
 
     assert_performed_check_fields!(check)
