@@ -1,6 +1,17 @@
-<%# frozen_string_literal: true %>
+<div class="container py-5">
+  <h1 class="mb-3">Github Quality</h1>
+  <h2 class="h5 mb-4">Анализатор качества репозиториев</h2>
 
-<h1>Github Quality</h1>
-<h2>Анализатор качества репозиториев</h2>
+  <% if current_user %>
+    <p class="mb-3">
+      Вы вошли как <strong><%= current_user.email %></strong>.
+    </p>
 
-<p>Github Quality</p>
+    <div class="mb-3 d-flex gap-2">
+      <%= link_to "Репозитории", repositories_path, class: "btn btn-primary" %>
+      <%= button_to "Выйти", logout_path, method: :delete, data: { turbo: false }, class: "btn btn-outline-secondary" %>
+    </div>
+  <% else %>
+    <%= button_to "Войти с помощью Github", "/auth/github", method: :post, data: { turbo: false }, class: "btn btn-primary" %>
+  <% end %>
+</div>
