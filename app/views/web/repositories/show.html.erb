@@ -41,15 +41,18 @@
           </thead>
           <tbody>
             <% @checks.each do |check| %>
+              <% short = check_short_commit_id(check) %>
+              <% url = check_github_commit_url(check) %>
+
               <tr>
                 <td scope="row">
                   <%= link_to check.id, repository_check_path(@repository, check) %>
                 </td>
                 <td scope="row"><%= check.human_status %></td>
                 <td scope="row">
-                  <% if check.short_commit_id.present? && check.github_commit_url.present? %>
-                    <%= link_to check.short_commit_id,
-                                check.github_commit_url,
+                  <% if short.present? && url.present? %>
+                    <%= link_to short,
+                                url,
                                 target: "_blank",
                                 rel: "noopener" %>
                   <% end %>
