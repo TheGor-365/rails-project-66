@@ -28,7 +28,7 @@ class Check < ApplicationRecord
   end
 
   def human_status
-    return I18n.t("checks.aasm_state.#{aasm_state}", default: aasm_state.to_s) unless finished?
+    return aasm.human_state unless finished?
 
     I18n.t("checks.result_status.#{status}", default: status.to_s)
   end
