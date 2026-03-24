@@ -5,7 +5,6 @@ require 'fileutils'
 require 'json'
 require 'securerandom'
 require 'uri'
-require 'pathname'
 
 class CodeChecker
   include CodeChecker::Support
