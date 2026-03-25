@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'open3'
 require 'fileutils'
 require 'json'
 require 'securerandom'
@@ -61,6 +60,10 @@ class CodeChecker
 
   private
 
+  def command_runner
+    ApplicationContainer[:command_runner]
+  end
+
   def clone_repository
     default_dir = Rails.root.join('tmp/repos').to_s
     base_dir = Pathname.new(ENV.fetch('REPOS_DIR', default_dir))
@@ -78,7 +81,7 @@ class CodeChecker
       dir.to_s
     ]
 
-    _stdout, stderr, status = Open3.capture3(*command, chdir: Rails.root.to_s)
+    _stdout, stderr, status = command_runner.capture3(*command, chdir: Rails.root.to_s)
 
     raise "Failed to clone repository: #{stderr}" unless status.success?
 
@@ -86,8 +89,8 @@ class CodeChecker
   end
 
   def current_commit_sha(repo_path)
-    stdout, _stderr, status = Open3.capture3(
-      'git', '-C', repo_path.to_s, 'rev-parse', 'HEAD'
+    stdout, _stderr, status = command_runner.capture3(
+      'git', '-C', repo_path.to_s, 'rev-parse', 'HEAD', chdir: Rails.root.to_s
     )
 
     status.success? ? stdout.strip : nil
@@ -103,7 +106,7 @@ class CodeChecker
       repo_path.to_s
     ]
 
-    stdout, _stderr, status = Open3.capture3(*command, chdir: Rails.root.to_s)
+    stdout, _stderr, status = command_runner.capture3(*command, chdir: Rails.root.to_s)
 
     offenses_count = rubocop_offenses_count(stdout)
     success = status.success? && offenses_count.zero?
@@ -123,7 +126,7 @@ class CodeChecker
       repo_path.to_s
     ]
 
-    stdout, _stderr, status = Open3.capture3(*command, chdir: Rails.root.to_s)
+    stdout, _stderr, status = command_runner.capture3(*command, chdir: Rails.root.to_s)
 
     offenses_count = eslint_offenses_count(stdout)
     success = status.success? && offenses_count.zero?
