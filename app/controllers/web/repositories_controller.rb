@@ -56,17 +56,7 @@ module Web
       )
 
       if @repository.save
-        webhook_url = Rails.application.routes.url_helpers.api_checks_url(
-          host: ENV.fetch('APP_HOST', 'localhost'),
-          protocol: ENV.fetch('APP_PROTOCOL', 'http')
-        )
-
-        github_client.create_webhook(
-          access_token: current_user.token,
-          repo_full_name: @repository.full_name,
-          webhook_url: webhook_url
-        )
-
+        CreateRepositoryWebhookJob.perform_later(@repository.id)
         redirect_to repositories_path, notice: t('flash.repositories.created')
       else
         Rails.logger.error(
