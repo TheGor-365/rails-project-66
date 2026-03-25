@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 class CodeChecker
   module Support
     private
@@ -7,19 +9,13 @@ class CodeChecker
     def sanitize_clone_url(raw_url)
       url = raw_url.to_s.strip
 
-      return url if url.start_with?('https://github.com/')
-      return url if url.start_with?('git@github.com:')
-      return url if github_https_url?(url)
+      return url if github_clone_url?(url)
 
       raise ArgumentError, 'Unsupported clone URL (only GitHub HTTPS/SSH URLs are allowed)'
     end
 
-    def github_https_url?(url)
-      uri = URI.parse(url)
-      %w[http https].include?(uri.scheme) && uri.host == 'github.com'
-    rescue URI::InvalidURIError => e
-      Rails.logger.warn("[CodeChecker] Invalid clone URL: #{e.message}")
-      false
+    def github_clone_url?(url)
+      url.start_with?('https://github.com/', 'http://github.com/', 'git@github.com:')
     end
 
     def rubocop_offenses_count(output)
