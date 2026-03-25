@@ -8,6 +8,15 @@ en:
       github_login_failed: "Не удалось войти через GitHub"
     repositories:
       created: "Репозиторий добавлен"
+  web:
+    auth:
+      create:
+        github_missing_payload: "Ошибка авторизации через GitHub"
+        github_login_success: "Успешный вход через GitHub"
+      destroy:
+        logged_out: "Вы вышли"
+      failure:
+        github_login_failed: "Не удалось войти через GitHub"
 
 ru:
   flash:
@@ -19,3 +28,12 @@ ru:
       github_login_failed: "Не удалось войти через GitHub"
     repositories:
       created: "Репозиторий добавлен"
+  web:
+    auth:
+      create:
+        github_missing_payload: "Ошибка авторизации через GitHub"
+        github_login_success: "Успешный вход через GitHub"
+      destroy:
+        logged_out: "Вы вышли"
+      failure:
+        github_login_failed: "Не удалось войти через GitHub"
