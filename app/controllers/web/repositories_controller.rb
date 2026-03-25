@@ -2,7 +2,7 @@
 
 module Web
   class RepositoriesController < Web::ApplicationController
-    before_action :require_login
+    before_action :require_login!
     before_action :set_repository, only: %i[show]
 
     def index
