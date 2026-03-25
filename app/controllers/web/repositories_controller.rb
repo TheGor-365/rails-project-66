@@ -18,7 +18,7 @@ module Web
     def new
       github_client = ApplicationContainer[:github_client]
 
-      @github_repositories = github_client.repos(access_token: current_user.token)
+      @github_repositories = cached_github_repositories(github_client)
       @repository = current_user.repositories.build
 
       render :new
@@ -41,7 +41,7 @@ module Web
 
         @repository = current_user.repositories.build(github_id: github_id_param)
         @repository.errors.add(:github_id, :invalid)
-        @github_repositories = github_client.repos(access_token: current_user.token)
+        @github_repositories = cached_github_repositories(github_client)
         render :new, status: :unprocessable_content
         return
       end
@@ -74,8 +74,16 @@ module Web
           "Errors: #{@repository.errors.full_messages.inspect}"
         )
 
-        @github_repositories = github_client.repos(access_token: current_user.token)
+        @github_repositories = cached_github_repositories(github_client)
         render :new, status: :unprocessable_content
+      end
+    end
+
+    private
+
+    def cached_github_repositories(github_client)
+      Rails.cache.fetch([:github_repositories, current_user.cache_key_with_version], expires_in: 5.minutes) do
+        github_client.repos(access_token: current_user.token)
       end
     end
   end
