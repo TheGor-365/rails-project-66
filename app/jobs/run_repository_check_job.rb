@@ -5,6 +5,6 @@ class RunRepositoryCheckJob < ApplicationJob
 
   def perform(check_id, commit_id = nil)
     check = Check.find(check_id)
-    Checks::Run.call(check: check, commit_id: commit_id)
+    Checks::RunService.run(check: check, commit_id: commit_id)
   end
 end

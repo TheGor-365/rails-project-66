@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Checks
-  class Run
-    def self.call(check:, commit_id: nil)
+  class RunService
+    def self.run(check:, commit_id: nil)
       check.run_check! if check.may_run_check?
 
       result = run_code_checker(check, commit_id)
