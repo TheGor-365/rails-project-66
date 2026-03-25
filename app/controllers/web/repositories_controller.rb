@@ -3,7 +3,6 @@
 module Web
   class RepositoriesController < Web::ApplicationController
     before_action :require_login!
-    before_action :set_repository, only: %i[show]
 
     def index
       @repositories = current_user.repositories.order(created_at: :desc)
@@ -11,6 +10,7 @@ module Web
     end
 
     def show
+      @repository = current_user.repositories.find(params[:id])
       @checks = @repository.checks.order(created_at: :desc)
       render :show, formats: [:html]
     end
@@ -77,12 +77,6 @@ module Web
         @github_repositories = github_client.repos(access_token: current_user.token)
         render :new, status: :unprocessable_content, formats: [:html]
       end
-    end
-
-    private
-
-    def set_repository
-      @repository = current_user.repositories.find(params[:id])
     end
   end
 end
