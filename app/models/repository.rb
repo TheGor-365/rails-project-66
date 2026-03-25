@@ -8,20 +8,14 @@ class Repository < ApplicationRecord
 
   enumerize :language, in: %w[ruby javascript], predicates: true
 
-  before_validation :normalize_language
-
   validates :github_id, presence: true, uniqueness: { scope: :user_id }
   validates :name, :full_name, :clone_url, :ssh_url, presence: true
 
-  def last_check
-    checks.order(created_at: :desc).first
+  def language=(value)
+    super(value.to_s.downcase.presence)
   end
 
-  private
-
-  def normalize_language
-    return if language.blank?
-
-    self.language = language.to_s.downcase
+  def last_check
+    checks.order(created_at: :desc).first
   end
 end
