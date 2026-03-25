@@ -27,8 +27,6 @@ module Web
     def create
       github_client = ApplicationContainer[:github_client]
 
-      github_id_param = params.require(:repository).fetch(:github_id)
-
       github_repo = github_client.repo(
         github_id: github_id_param.to_i,
         access_token: current_user.token
@@ -75,6 +73,10 @@ module Web
       Rails.cache.fetch([:github_repositories, current_user.cache_key_with_version], expires_in: 5.minutes) do
         github_client.repos(access_token: current_user.token)
       end
+    end
+
+    def github_id_param
+      params.require(:repository).fetch(:github_id)
     end
   end
 end
