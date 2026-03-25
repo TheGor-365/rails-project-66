@@ -2,8 +2,7 @@
 
 module Web
   module Repositories
-    class ChecksController < Web::ApplicationController
-      before_action :require_login!
+    class ChecksController < ApplicationController
       before_action :set_repository
 
       def show
