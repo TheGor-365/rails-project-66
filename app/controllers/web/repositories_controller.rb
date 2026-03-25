@@ -6,13 +6,13 @@ module Web
 
     def index
       @repositories = current_user.repositories.order(created_at: :desc)
-      render :index, formats: [:html]
+      render :index
     end
 
     def show
       @repository = current_user.repositories.find(params[:id])
       @checks = @repository.checks.order(created_at: :desc)
-      render :show, formats: [:html]
+      render :show
     end
 
     def new
@@ -21,7 +21,7 @@ module Web
       @github_repositories = github_client.repos(access_token: current_user.token)
       @repository = current_user.repositories.build
 
-      render :new, formats: [:html]
+      render :new
     end
 
     def create
@@ -42,7 +42,7 @@ module Web
         @repository = current_user.repositories.build(github_id: github_id_param)
         @repository.errors.add(:github_id, :invalid)
         @github_repositories = github_client.repos(access_token: current_user.token)
-        render :new, status: :unprocessable_content, formats: [:html]
+        render :new, status: :unprocessable_content
         return
       end
 
@@ -75,7 +75,7 @@ module Web
         )
 
         @github_repositories = github_client.repos(access_token: current_user.token)
-        render :new, status: :unprocessable_content, formats: [:html]
+        render :new, status: :unprocessable_content
       end
     end
   end
