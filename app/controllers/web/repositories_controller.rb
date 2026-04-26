@@ -16,7 +16,7 @@ module Web
     def new
       github_client = ApplicationContainer[:github_client]
 
-      @github_repositories = cached_github_repositories(github_client)
+      @github_repositories = supported_github_repositories(github_client)
       @repository = current_user.repositories.build
     end
 
@@ -35,7 +35,15 @@ module Web
 
         @repository = current_user.repositories.build(github_id: github_id_param)
         @repository.errors.add(:github_id, :invalid)
-        @github_repositories = cached_github_repositories(github_client)
+        @github_repositories = supported_github_repositories(github_client)
+        render :new, status: :unprocessable_content
+        return
+      end
+
+      unless supported_language?(github_repo.language)
+        @repository = current_user.repositories.build(github_id: github_repo.id)
+        @repository.errors.add(:language, :inclusion)
+        @github_repositories = supported_github_repositories(github_client)
         render :new, status: :unprocessable_content
         return
       end
@@ -69,17 +77,31 @@ module Web
           "Errors: #{@repository.errors.full_messages.inspect}"
         )
 
-        @github_repositories = cached_github_repositories(github_client)
+        @github_repositories = supported_github_repositories(github_client)
         render :new, status: :unprocessable_content
       end
     end
 
     private
 
+    def supported_github_repositories(github_client)
+      cached_github_repositories(github_client).select do |repo|
+        supported_language?(repo.language)
+      end
+    end
+
     def cached_github_repositories(github_client)
       Rails.cache.fetch([:github_repositories, current_user.cache_key_with_version], expires_in: 5.minutes) do
         github_client.repos(access_token: current_user.token)
       end
+    end
+
+    def supported_language?(language)
+      supported_repository_languages.include?(language.to_s.downcase)
+    end
+
+    def supported_repository_languages
+      Repository.language.values.map(&:to_s)
     end
 
     def github_id_param
