@@ -7,7 +7,8 @@
 
       <%= button_to "Проверить",
                     repository_checks_path(@repository),
-                    class: "btn btn-primary mb-4" %>
+                    class: "btn btn-primary mb-4",
+                    form: { data: { turbo: false } } %>
 
       <p>
         <strong class="me-2">Название</strong>

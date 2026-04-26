@@ -5,7 +5,7 @@
     <div class="alert alert-danger"><%= flash[:alert] %></div>
   <% end %>
 
-  <%= form_with model: @repository, url: repositories_path, local: true do |form| %>
+  <%= form_with model: @repository, url: repositories_path, local: true, data: { turbo: false } do |form| %>
     <% if @repository.errors.any? %>
       <div class="alert alert-danger">
         <ul class="mb-0">
