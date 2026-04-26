@@ -4,12 +4,16 @@ module Web
   module Repositories
     class ChecksController < ApplicationController
       def show
-        @repository = current_user.repositories.find(params[:repository_id])
+        @repository = Repository.find(params[:repository_id])
+        authorize @repository, :show?
+
         @check = @repository.checks.find(params[:id])
       end
 
       def create
-        @repository = current_user.repositories.find(params[:repository_id])
+        @repository = Repository.find(params[:repository_id])
+        authorize @repository, :show?
+
         @check = @repository.checks.create!
         RunRepositoryCheckJob.perform_now(@check.id)
 
