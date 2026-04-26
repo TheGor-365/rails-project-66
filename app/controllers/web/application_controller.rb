@@ -2,6 +2,8 @@
 
 module Web
   class ApplicationController < ::ApplicationController
+    include AuthManagement
+
     # В проекте/CI иногда прилетает Accept: text/vnd.turbo-stream.html и т.п.
     # Для WEB-контроллеров нам всегда нужен HTML, иначе Rails может вернуть 406.
     before_action :force_html_format
