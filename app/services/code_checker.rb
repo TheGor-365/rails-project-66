@@ -81,19 +81,19 @@ class CodeChecker
       dir.to_s
     ]
 
-    _stdout, stderr, status = command_runner.capture3(*command, chdir: Rails.root.to_s)
+    result = command_runner.capture3(*command, chdir: Rails.root.to_s)
 
-    raise "Failed to clone repository: #{stderr}" unless status.success?
+    raise "Failed to clone repository: #{result.stderr}" unless result.status.success?
 
     dir
   end
 
   def current_commit_sha(repo_path)
-    stdout, _stderr, status = command_runner.capture3(
+    result = command_runner.capture3(
       'git', '-C', repo_path.to_s, 'rev-parse', 'HEAD', chdir: Rails.root.to_s
     )
 
-    status.success? ? stdout.strip : nil
+    result.status.success? ? result.stdout.strip : nil
   end
 
   def run_rubocop(repo_path)
@@ -106,12 +106,12 @@ class CodeChecker
       repo_path.to_s
     ]
 
-    stdout, _stderr, status = command_runner.capture3(*command, chdir: Rails.root.to_s)
+    result = command_runner.capture3(*command, chdir: Rails.root.to_s)
 
-    offenses_count = rubocop_offenses_count(stdout)
-    success = status.success? && offenses_count.zero?
+    offenses_count = rubocop_offenses_count(result.stdout)
+    success = result.status.success? && offenses_count.zero?
 
-    [stdout, offenses_count, success]
+    [result.stdout, offenses_count, success]
   end
 
   def run_eslint(repo_path)
@@ -126,11 +126,11 @@ class CodeChecker
       repo_path.to_s
     ]
 
-    stdout, _stderr, status = command_runner.capture3(*command, chdir: Rails.root.to_s)
+    result = command_runner.capture3(*command, chdir: Rails.root.to_s)
 
-    offenses_count = eslint_offenses_count(stdout)
-    success = status.success? && offenses_count.zero?
+    offenses_count = eslint_offenses_count(result.stdout)
+    success = result.status.success? && offenses_count.zero?
 
-    [stdout, offenses_count, success]
+    [result.stdout, offenses_count, success]
   end
 end
