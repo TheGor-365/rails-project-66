@@ -44,6 +44,17 @@ module Web
         return
       end
 
+      existing_repository = current_user.repositories.find_by(github_id: github_repo.id)
+
+      if existing_repository
+        check = existing_repository.checks.create!
+        RunRepositoryCheckJob.perform_now(check.id)
+
+        redirect_to repository_check_path(existing_repository, check),
+                    notice: t('web.repositories.checks.create.success', default: t('flash.repositories.created'))
+        return
+      end
+
       @repository = current_user.repositories.build(
         github_id: github_repo.id,
         name: github_repo.name,
