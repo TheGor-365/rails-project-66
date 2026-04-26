@@ -4,7 +4,9 @@ module Checks
   class RunService
     class << self
       def run(check:, commit_id: nil)
-        check.run_check! if check.may_run_check?
+        return check unless check.may_run_check?
+
+        check.run_check!
 
         result = run_code_checker(check, commit_id)
 
