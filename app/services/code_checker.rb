@@ -6,7 +6,7 @@ require 'securerandom'
 require 'uri'
 
 class CodeChecker
-  include CodeChecker::Support
+  include CodeCheckerSupport
 
   RUBY       = 'ruby'
   JAVASCRIPT = 'javascript'
