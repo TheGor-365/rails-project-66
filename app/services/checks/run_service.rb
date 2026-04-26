@@ -3,9 +3,7 @@
 module Checks
   class RunService
     class << self
-      # rubocop:disable Metrics/AbcSize
       # rubocop:disable Metrics/CyclomaticComplexity
-      # rubocop:disable Metrics/MethodLength
       # rubocop:disable Metrics/PerceivedComplexity
       def run(check:, commit_id: nil)
         notify_failure = lambda do
@@ -56,9 +54,7 @@ module Checks
         check
       end
       # rubocop:enable Metrics/PerceivedComplexity
-      # rubocop:enable Metrics/MethodLength
       # rubocop:enable Metrics/CyclomaticComplexity
-      # rubocop:enable Metrics/AbcSize
     end
   end
 end
