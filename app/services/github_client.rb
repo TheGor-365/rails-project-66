@@ -24,8 +24,6 @@ class GithubClient
     def client(access_token)
       client_class = ApplicationContainer[:octokit_client_class]
       client_class.new(access_token:)
-    rescue KeyError
-      Octokit::Client.new(access_token:)
     end
   end
 end
