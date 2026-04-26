@@ -3,23 +3,17 @@
 module Web
   module Repositories
     class ChecksController < ApplicationController
-      before_action :set_repository
-
       def show
+        @repository = current_user.repositories.find(params[:repository_id])
         @check = @repository.checks.find(params[:id])
       end
 
       def create
+        @repository = current_user.repositories.find(params[:repository_id])
         @check = @repository.checks.create!
         RunRepositoryCheckJob.perform_now(@check.id)
 
         redirect_to repository_path(@repository), notice: t('.success', default: 'Проверка запущена')
-      end
-
-      private
-
-      def set_repository
-        @repository = current_user.repositories.find(params[:repository_id])
       end
     end
   end
