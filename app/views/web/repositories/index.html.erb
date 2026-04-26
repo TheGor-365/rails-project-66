@@ -22,7 +22,7 @@
               <td><%= repository.language_text %></td>
               <td>
                 <% if repository.last_check.present? %>
-                  <%= repository.last_check.human_status %>
+                  <%= check_status_text(repository.last_check) %>
                 <% else %>
                   —
                 <% end %>

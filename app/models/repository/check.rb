@@ -24,10 +24,4 @@ class Repository::Check < ApplicationRecord
       transitions from: :running, to: :failed
     end
   end
-
-  def human_status
-    return aasm.human_state unless finished?
-
-    I18n.t("checks.result_status.#{status}", default: status.to_s)
-  end
 end

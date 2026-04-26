@@ -48,7 +48,7 @@
                 <td scope="row">
                   <%= link_to check.id, repository_check_path(@repository, check) %>
                 </td>
-                <td scope="row"><%= check.human_status %></td>
+                <td scope="row"><%= check_status_text(check) %></td>
                 <td scope="row">
                   <% if short.present? && url.present? %>
                     <%= link_to short,

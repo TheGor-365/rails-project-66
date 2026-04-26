@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class CheckMailer < ApplicationMailer
+  helper ChecksHelper
+
   def check_report(check)
     @check      = check
     @repository = check.repository

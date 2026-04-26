@@ -1,6 +1,6 @@
 Результат проверки репозитория <%= @repository.full_name %>
 
-Статус: <%= @check.human_status %>
+Статус: <%= check_status_text(@check) %>
 Ошибок: <%= @check.violations_count || 0 %>
 
 ID проверки: <%= @check.id %>
