@@ -37,13 +37,13 @@ module Web
         redirect_to repository_check_path(result.repository, result.check),
                     notice: t('web.repositories.checks.create.success', default: t('flash.repositories.created'))
       else
-        render_new_form(github_client, status: :unprocessable_content)
+        render_new_form_with_repositories(github_client, status: :unprocessable_content)
       end
     end
 
     private
 
-    def render_new_form(github_client, status:)
+    def render_new_form_with_repositories(github_client, status:)
       @github_repositories = supported_github_repositories(github_client)
       render :new, status:
     end

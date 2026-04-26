@@ -15,6 +15,8 @@ module Repositories
     end
 
     def call
+      return invalid_github_repo if github_id.blank?
+
       github_repo = find_github_repo
       return invalid_github_repo unless github_repo
       return unsupported_language(github_repo) unless Repository.supported_language?(github_repo.language)
