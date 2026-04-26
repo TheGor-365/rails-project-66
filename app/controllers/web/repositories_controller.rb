@@ -6,13 +6,11 @@ module Web
 
     def index
       @repositories = current_user.repositories.order(created_at: :desc)
-      render :index
     end
 
     def show
       @repository = current_user.repositories.find(params[:id])
       @checks = @repository.checks.order(created_at: :desc)
-      render :show
     end
 
     def new
@@ -20,8 +18,6 @@ module Web
 
       @github_repositories = cached_github_repositories(github_client)
       @repository = current_user.repositories.build
-
-      render :new
     end
 
     def create

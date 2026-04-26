@@ -7,7 +7,6 @@ module Web
 
       def show
         @check = @repository.checks.find(params[:id])
-        render :show
       end
 
       def create
