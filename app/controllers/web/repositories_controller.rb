@@ -35,16 +35,14 @@ module Web
 
         @repository = current_user.repositories.build(github_id: github_id_param)
         @repository.errors.add(:github_id, :invalid)
-        @github_repositories = supported_github_repositories(github_client)
-        render :new, status: :unprocessable_content
+        render_new_form(github_client, status: :unprocessable_content)
         return
       end
 
       unless supported_language?(github_repo.language)
         @repository = current_user.repositories.build(github_id: github_repo.id)
         @repository.errors.add(:language, :inclusion)
-        @github_repositories = supported_github_repositories(github_client)
-        render :new, status: :unprocessable_content
+        render_new_form(github_client, status: :unprocessable_content)
         return
       end
 
@@ -77,12 +75,16 @@ module Web
           "Errors: #{@repository.errors.full_messages.inspect}"
         )
 
-        @github_repositories = supported_github_repositories(github_client)
-        render :new, status: :unprocessable_content
+        render_new_form(github_client, status: :unprocessable_content)
       end
     end
 
     private
+
+    def render_new_form(github_client, status:)
+      @github_repositories = supported_github_repositories(github_client)
+      render :new, status:
+    end
 
     def supported_github_repositories(github_client)
       cached_github_repositories(github_client).select do |repo|
