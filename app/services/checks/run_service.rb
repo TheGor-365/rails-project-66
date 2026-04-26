@@ -8,7 +8,10 @@ module Checks
 
         check.run_check!
 
-        result = run_code_checker(check, commit_id)
+        result = ApplicationContainer[:code_checker].run(
+          repository: check.repository,
+          commit_id: commit_id
+        )
 
         run_data = persist_successful_run(check, result, fallback_commit_id: commit_id)
         finalize(check, passed: run_data[:passed], offenses_count: run_data[:offenses_count])
@@ -19,11 +22,6 @@ module Checks
       end
 
       private
-
-      def run_code_checker(check, commit_id)
-        code_checker = ApplicationContainer[:code_checker]
-        code_checker.run(repository: check.repository, commit_id: commit_id)
-      end
 
       def persist_successful_run(check, result, fallback_commit_id:)
         offenses_count = result.offenses_count.to_i
