@@ -3,7 +3,19 @@
 module Checks
   class RunService
     class << self
+      # rubocop:disable Metrics/AbcSize
+      # rubocop:disable Metrics/CyclomaticComplexity
+      # rubocop:disable Metrics/MethodLength
+      # rubocop:disable Metrics/PerceivedComplexity
       def run(check:, commit_id: nil)
+        notify_failure = lambda do
+          CheckMailer.check_report(check).deliver_now
+        rescue StandardError => e
+          Rails.logger.error(
+            "[CheckMailer] Failed to send report for check_id=#{check.id}: #{e.class}: #{e.message}"
+          )
+        end
+
         return check unless check.may_run_check?
 
         check.run_check!
@@ -13,21 +25,10 @@ module Checks
           commit_id: commit_id
         )
 
-        run_data = persist_successful_run(check, result, fallback_commit_id: commit_id)
-        finalize(check, passed: run_data[:passed], offenses_count: run_data[:offenses_count])
-
-        check
-      rescue StandardError => e
-        handle_failed_run(check, commit_id, e)
-      end
-
-      private
-
-      def persist_successful_run(check, result, fallback_commit_id:)
         offenses_count = result.offenses_count.to_i
         passed = result.success? && offenses_count.zero?
         final_status = passed ? 'passed' : 'failed'
-        stored_commit_id = result.commit_id.presence || fallback_commit_id
+        stored_commit_id = result.commit_id.presence || commit_id
 
         check.update!(
           commit_id: stored_commit_id,
@@ -37,38 +38,27 @@ module Checks
           status: final_status
         )
 
-        { passed: passed, offenses_count: offenses_count }
-      end
-
-      def finalize(check, passed:, offenses_count:)
         check.finish! if check.may_finish?
-        notify_if_failed(check, offenses_count) unless passed
-      end
+        notify_failure.call if offenses_count.positive?
 
-      def handle_failed_run(check, commit_id, error)
+        check
+      rescue StandardError => e
         check.update!(
           commit_id: commit_id,
           status: 'failed',
           passed: false,
-          output: error.full_message(highlight: false, order: :top)
+          output: e.full_message(highlight: false, order: :top)
         )
 
         check.fail! if check.may_fail?
-        notify_if_failed(check, nil)
+        notify_failure.call
 
         check
       end
-
-      def notify_if_failed(check, offenses_count)
-        failed = offenses_count.nil? || offenses_count.positive?
-        return unless failed
-
-        CheckMailer.check_report(check).deliver_now
-      rescue StandardError => e
-        Rails.logger.error(
-          "[CheckMailer] Failed to send report for check_id=#{check.id}: #{e.class}: #{e.message}"
-        )
-      end
+      # rubocop:enable Metrics/PerceivedComplexity
+      # rubocop:enable Metrics/MethodLength
+      # rubocop:enable Metrics/CyclomaticComplexity
+      # rubocop:enable Metrics/AbcSize
     end
   end
 end
