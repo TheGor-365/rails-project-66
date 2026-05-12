@@ -27,7 +27,14 @@ html.h-100
           = link_to root_path, class: 'navbar-brand me-md-4' do
             | Hexlet Github Quality
 
-          button.navbar-toggler type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation"
+          button.navbar-toggler(
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarToggler"
+            aria-controls="navbarToggler"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          )
             span.navbar-toggler-icon
 
           #navbarToggler.collapse.navbar-collapse
