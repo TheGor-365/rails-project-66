@@ -6,53 +6,49 @@ module Repositories
 
     class << self
       def call(user:, github_id:, github_client:)
-        return invalid_github_repo(user: user, github_id: github_id) if github_id.blank?
+        if github_id.blank?
+          Rails.logger.warn(
+            "[Repositories::CreateService] GitHub repo not found for github_id=#{github_id}"
+          )
 
-        github_repo = find_github_repo(user: user, github_id: github_id, github_client: github_client)
-        return invalid_github_repo(user: user, github_id: github_id) unless github_repo
-        return unsupported_language(user: user, github_repo: github_repo) unless Repository.supported_language?(github_repo.language)
+          repository = user.repositories.build(github_id: github_id)
+          repository.errors.add(:github_id, :invalid)
 
-        existing_repository = user.repositories.find_by(github_id: github_repo.id)
-        return create_check(existing_repository) if existing_repository
+          return Result.new(status: :invalid, repository: repository)
+        end
 
-        create_repository(user: user, github_repo: github_repo)
-      end
-
-      private
-
-      def find_github_repo(user:, github_id:, github_client:)
-        github_client.repo(
+        github_repo = github_client.repo(
           github_id: github_id.to_i,
           access_token: user.token
         )
-      end
 
-      def invalid_github_repo(user:, github_id:)
-        Rails.logger.warn(
-          "[Repositories::CreateService] GitHub repo not found for github_id=#{github_id}"
-        )
+        unless github_repo
+          Rails.logger.warn(
+            "[Repositories::CreateService] GitHub repo not found for github_id=#{github_id}"
+          )
 
-        repository = user.repositories.build(github_id: github_id)
-        repository.errors.add(:github_id, :invalid)
+          repository = user.repositories.build(github_id: github_id)
+          repository.errors.add(:github_id, :invalid)
 
-        Result.new(status: :invalid, repository: repository)
-      end
+          return Result.new(status: :invalid, repository: repository)
+        end
 
-      def unsupported_language(user:, github_repo:)
-        repository = user.repositories.build(github_id: github_repo.id)
-        repository.errors.add(:language, :inclusion)
+        unless Repository.supported_language?(github_repo.language)
+          repository = user.repositories.build(github_id: github_repo.id)
+          repository.errors.add(:language, :inclusion)
 
-        Result.new(status: :invalid, repository: repository)
-      end
+          return Result.new(status: :invalid, repository: repository)
+        end
 
-      def create_check(repository)
-        check = repository.checks.create!
-        RunRepositoryCheckJob.perform_now(check.id)
+        existing_repository = user.repositories.find_by(github_id: github_repo.id)
 
-        Result.new(status: :check_created, repository: repository, check: check)
-      end
+        if existing_repository
+          check = existing_repository.checks.create!
+          RunRepositoryCheckJob.perform_now(check.id)
 
-      def create_repository(user:, github_repo:)
+          return Result.new(status: :check_created, repository: existing_repository, check: check)
+        end
+
         repository = user.repositories.build(
           github_id: github_repo.id,
           name: github_repo.name,
@@ -64,6 +60,7 @@ module Repositories
 
         if repository.save
           CreateRepositoryWebhookJob.perform_later(repository.id)
+
           Result.new(status: :created, repository: repository)
         else
           Rails.logger.error(
