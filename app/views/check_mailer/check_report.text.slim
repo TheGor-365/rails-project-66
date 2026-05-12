@@ -1,13 +1,9 @@
-| Результат проверки репозитория #\{@repository.full_name\}
-
-| Статус: #\{check_status_text(@check)\}
-| Ошибок: #\{@check.violations_count || 0\}
-
-| ID проверки: #\{@check.id\}
-| ID коммита: #\{@check.commit_id.presence || "—"\}
-
-| Если нужно, зайдите в систему и посмотрите подробный отчёт:
-| #\{repository_check_url(@repository, @check)\}
-
-| --
-| Github Quality
+= "Результат проверки репозитория #{@repository.full_name}\n\n"
+= "Статус: #{check_status_text(@check)}\n"
+= "Ошибок: #{@check.violations_count || 0}\n\n"
+= "ID проверки: #{@check.id}\n"
+= "ID коммита: #{@check.commit_id.presence || "—"}\n\n"
+= "Если нужно, зайдите в систему и посмотрите подробный отчёт:\n"
+= "#{repository_check_url(@repository, @check)}\n\n"
+= "--\n"
+= "Github Quality\n"
