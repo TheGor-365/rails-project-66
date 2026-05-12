@@ -3,6 +3,8 @@
 require 'test_helper'
 
 class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
+  include ActiveJob::TestHelper
+
   test 'guest is redirected from index' do
     get repositories_path
 
@@ -49,7 +51,9 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
     user = sign_in!
 
     assert_difference -> { user.repositories.count }, 1 do
-      post repositories_path, params: { repository: { github_id: 1 } }
+      perform_enqueued_jobs do
+        post repositories_path, params: { repository: { github_id: 1 } }
+      end
     end
 
     assert_redirected_to repositories_path

@@ -23,24 +23,18 @@ module Web
     end
 
     def create
-      github_client = ApplicationContainer[:github_client]
-      result = ::Repositories::CreateService.call(
-        user: current_user,
-        github_id: github_id_param,
-        github_client: github_client
-      )
+      if github_id_param.blank?
+        github_client = ApplicationContainer[:github_client]
+        @repository = current_user.repositories.build(github_id: github_id_param)
+        @repository.errors.add(:github_id, :invalid)
 
-      @repository = result.repository
-
-      case result.status
-      when :created
-        redirect_to repositories_path, notice: t('flash.repositories.created')
-      when :check_created
-        redirect_to repository_check_path(result.repository, result.check),
-                    notice: t('web.repositories.checks.create.success', default: t('flash.repositories.created'))
-      else
         render_new_form_with_repositories(github_client, status: :unprocessable_content)
+        return
       end
+
+      CreateRepositoryFromGithubJob.perform_later(current_user.id, github_id_param)
+
+      redirect_to repositories_path, notice: t('flash.repositories.created')
     end
 
     private
