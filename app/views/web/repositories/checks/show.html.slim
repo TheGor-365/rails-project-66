@@ -1,0 +1,71 @@
+.mt-4.mb-5.pb-5
+  .container
+    .p-4.align-items-center.border.shadow.bg-white.rounded-3
+      .mb-4
+        h1
+
+      = link_to 'Перейти к репозиторию',
+                repository_path(@repository),
+                class: 'btn btn-primary mb-4'
+
+      h1 = "Проверка ##{@check.id}"
+
+      - short = check_short_commit_id(@check)
+      - url = check_github_commit_url(@check)
+
+      table.table
+        tr
+          td Дата создания
+          td = l @check.created_at, format: :long
+        tr
+          td Статус
+          td = check_status_text(@check)
+        tr
+          td Проверка пройдена
+          td
+            - unless @check.passed.nil?
+              = @check.passed
+        tr
+          td Количество замечаний
+          td = @check.violations_count
+        tr
+          td ID коммита
+          td
+            - if short.present? && url.present?
+              = link_to short,
+                        url,
+                        target: '_blank',
+                        rel: 'noopener'
+
+      - offenses_by_file = @check.offenses_by_file
+
+      - if offenses_by_file.present?
+        table.table.table-hover.mb-5
+          thead
+            tr
+              th Сообщение
+              th Идентификатор правила
+              th Строка и символ
+          tbody
+            - offenses_by_file.each do |file|
+              tr
+                td colspan="3"
+                  - if @check.short_commit_id.present? && file[:path].present?
+                    = link_to file[:path],
+                              "https://github.com/#{@repository.full_name}/tree/#{short}/#{file[:path]}",
+                              target: '_blank',
+                              rel: 'noopener'
+                  - else
+                    = file[:path]
+
+              - file[:offenses].each do |offense|
+                tr
+                  td = offense[:message]
+                  td = offense[:rule]
+                  td
+                    - if offense[:line].present? && offense[:column].present?
+                      = "#{offense[:line]}:#{offense[:column]}"
+                    - elsif offense[:line].present?
+                      = offense[:line]
+      - elsif @check.output.present?
+        pre.mt-4 = @check.output

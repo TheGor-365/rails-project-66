@@ -1,0 +1,19 @@
+.container.py-5
+  h1.mb-4 Добавить репозиторий
+
+  - if flash[:alert].present?
+    .alert.alert-danger = flash[:alert]
+
+  = form_with model: @repository, url: repositories_path, local: true, data: { turbo: false } do |form|
+    - if @repository.errors.any?
+      .alert.alert-danger
+        ul.mb-0
+          - @repository.errors.full_messages.each do |message|
+            li = message
+
+    .mb-3
+      - repository_options = @github_repositories.map { |repo| [repo.full_name, repo.id] }
+      = form.label :github_id, 'Github *', class: 'form-label'
+      = form.select :github_id, options_for_select(repository_options, @repository.github_id), { include_blank: true }, class: 'form-select'
+
+    = form.submit 'Создать', class: 'btn btn-primary'

@@ -1,0 +1,24 @@
+.mt-4.mb-5.pb-5
+  .container
+    .p-4.align-items-center.border.shadow.bg-white.rounded-3
+      .mb-4
+        h1
+
+      = link_to 'Добавить', new_repository_path, class: 'btn btn-primary'
+
+      table.table.table-striped.table-hover.mt-4
+        thead
+          tr
+            th scope="col" Название
+            th scope="col" Язык
+            th scope="col" Статус последней проверки
+        tbody
+          - @repositories.each do |repository|
+            tr
+              td = link_to repository.full_name, repository_path(repository)
+              td = repository.language_text
+              td
+                - if repository.last_check.present?
+                  = check_status_text(repository.last_check)
+                - else
+                  | —

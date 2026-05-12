@@ -1,0 +1,57 @@
+.mt-4.mb-5.pb-5
+  .container
+    .p-4.align-items-center.border.shadow.bg-white.rounded-3
+      .mb-4
+        h1 = @repository.full_name
+
+      = button_to 'Проверить',
+                  repository_checks_path(@repository),
+                  class: 'btn btn-primary mb-4',
+                  form: { data: { turbo: false } }
+
+      p
+        strong.me-2 Название
+        = @repository.full_name
+      p
+        strong.me-2 Язык
+        = @repository.language_text
+      p
+        strong.me-2 Дата создания
+        = l @repository.created_at, format: :long
+      p
+        strong.me-2 Дата обновления
+        = l @repository.updated_at, format: :long
+
+      hr
+
+      - if @checks.present?
+        table.table.table-striped
+          thead
+            tr
+              th scope="col"
+              th scope="col" Статус
+              th scope="col" ID коммита
+              th scope="col" Проверка пройдена?
+              th scope="col" Дата создания
+          tbody
+            - @checks.each do |check|
+              - short = check_short_commit_id(check)
+              - url = check_github_commit_url(check)
+
+              tr
+                td scope="row"
+                  = link_to check.id, repository_check_path(@repository, check)
+                td scope="row" = check_status_text(check)
+                td scope="row"
+                  - if short.present? && url.present?
+                    = link_to short,
+                              url,
+                              target: '_blank',
+                              rel: 'noopener'
+                td scope="row"
+                  - unless check.passed.nil?
+                    = check.passed
+                td scope="row" = l check.created_at, format: :short
+      - else
+        p.text-muted.mb-0
+          | Проверок ещё нет — запустите первую с помощью кнопки «Проверить» выше.
