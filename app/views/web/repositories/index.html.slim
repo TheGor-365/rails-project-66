@@ -2,16 +2,16 @@
   .container
     .p-4.align-items-center.border.shadow.bg-white.rounded-3
       .mb-4
-        h1
+        h1 = t('views_i18n.repositories.index.title')
 
-      = link_to 'Добавить', new_repository_path, class: 'btn btn-primary'
+      = link_to t('views_i18n.repositories.index.add'), new_repository_path, class: 'btn btn-primary'
 
       table.table.table-striped.table-hover.mt-4
         thead
           tr
-            th scope="col" Название
-            th scope="col" Язык
-            th scope="col" Статус последней проверки
+            th scope="col" = t('views_i18n.repositories.index.table.name')
+            th scope="col" = t('views_i18n.repositories.index.table.language')
+            th scope="col" = t('views_i18n.repositories.index.table.last_check_status')
         tbody
           - @repositories.each do |repository|
             tr

@@ -1,5 +1,5 @@
 .container.py-5
-  h1.mb-4 Добавить репозиторий
+  h1.mb-4 = t('views_i18n.repositories.new.title')
 
   - if flash[:alert].present?
     .alert.alert-danger = flash[:alert]
@@ -13,7 +13,10 @@
 
     .mb-3
       - repository_options = @github_repositories.map { |repo| [repo.full_name, repo.id] }
-      = form.label :github_id, 'Github *', class: 'form-label'
-      = form.select :github_id, options_for_select(repository_options, @repository.github_id), { include_blank: true }, class: 'form-select'
+      = form.label :github_id, t('views_i18n.repositories.new.github_label'), class: 'form-label'
+      = form.select :github_id,
+                    options_for_select(repository_options, @repository.github_id),
+                    { include_blank: true },
+                    class: 'form-select'
 
-    = form.submit 'Создать', class: 'btn btn-primary'
+    = form.submit t('views_i18n.repositories.new.submit'), class: 'btn btn-primary'

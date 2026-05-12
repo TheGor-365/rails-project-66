@@ -1,0 +1,68 @@
+ru:
+  views_i18n:
+    app:
+      name: "Hexlet Github Quality"
+      nav:
+        home: "Главная"
+        repositories: "Репозитории"
+        logout: "Выйти"
+        login_github: "Войти через GitHub"
+    home:
+      title: "Github Quality"
+      subtitle: "Анализатор качества репозиториев"
+      signed_in_as: "Вы вошли как"
+      repositories: "Репозитории"
+      logout: "Выйти"
+      login_github: "Войти с помощью Github"
+    repositories:
+      index:
+        title: "Репозитории"
+        add: "Добавить"
+        table:
+          name: "Название"
+          language: "Язык"
+          last_check_status: "Статус последней проверки"
+      new:
+        title: "Добавить репозиторий"
+        github_label: "Github *"
+        submit: "Создать"
+      show:
+        run_check: "Проверить"
+        name: "Название"
+        language: "Язык"
+        created_at: "Дата создания"
+        updated_at: "Дата обновления"
+        checks_empty: "Проверок ещё нет — запустите первую с помощью кнопки «Проверить» выше."
+        checks:
+          status: "Статус"
+          commit_id: "ID коммита"
+          passed: "Проверка пройдена?"
+          created_at: "Дата создания"
+      check:
+        back_to_repository: "Перейти к репозиторию"
+        title: "Проверка #%{id}"
+        created_at: "Дата создания"
+        status: "Статус"
+        passed: "Проверка пройдена"
+        violations_count: "Количество замечаний"
+        commit_id: "ID коммита"
+        message: "Сообщение"
+        rule: "Идентификатор правила"
+        location: "Строка и символ"
+    mailer:
+      check_report:
+        repository_result: "Результат проверки репозитория %{repository}"
+        status: "Статус: %{status}"
+        errors: "Ошибок: %{count}"
+        check_id: "ID проверки: %{id}"
+        commit_id: "ID коммита: %{commit_id}"
+        details: "Если нужно, зайдите в систему и посмотрите подробный отчёт:"
+        signature: "Github Quality"
+  web:
+    repositories:
+      checks:
+        create:
+          success: "Проверка запущена"
+  mailers:
+    check_report:
+      subject: "Результат проверки репозитория %{repository}"

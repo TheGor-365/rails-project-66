@@ -17,7 +17,7 @@ module Web
         @check = @repository.checks.create!
         RunRepositoryCheckJob.perform_now(@check.id)
 
-        redirect_to repository_path(@repository), notice: t('.success', default: 'Проверка запущена')
+        redirect_to repository_path(@repository), notice: t('.success')
       end
     end
   end

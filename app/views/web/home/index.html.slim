@@ -1,15 +1,23 @@
 .container.py-5
-  h1.mb-3 Github Quality
-  h2.h5.mb-4 Анализатор качества репозиториев
+  h1.mb-3 = t('views_i18n.home.title')
+  h2.h5.mb-4 = t('views_i18n.home.subtitle')
 
   - if current_user
     p.mb-3
-      | Вы вошли как
+      = "#{t('views_i18n.home.signed_in_as')} "
       strong = current_user.email
       | .
 
     .mb-3.d-flex.gap-2
-      = link_to 'Репозитории', repositories_path, class: 'btn btn-primary'
-      = button_to 'Выйти', logout_path, method: :delete, data: { turbo: false }, class: 'btn btn-outline-secondary'
+      = link_to t('views_i18n.home.repositories'), repositories_path, class: 'btn btn-primary'
+      = button_to t('views_i18n.home.logout'),
+                  logout_path,
+                  method: :delete,
+                  data: { turbo: false },
+                  class: 'btn btn-outline-secondary'
   - else
-    = button_to 'Войти с помощью Github', '/auth/github', method: :post, data: { turbo: false }, class: 'btn btn-primary'
+    = button_to t('views_i18n.home.login_github'),
+                '/auth/github',
+                method: :post,
+                data: { turbo: false },
+                class: 'btn btn-primary'

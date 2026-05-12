@@ -4,22 +4,22 @@
       .mb-4
         h1 = @repository.full_name
 
-      = button_to 'Проверить',
+      = button_to t('views_i18n.repositories.show.run_check'),
                   repository_checks_path(@repository),
                   class: 'btn btn-primary mb-4',
                   form: { data: { turbo: false } }
 
       p
-        strong.me-2 Название
+        strong.me-2 = t('views_i18n.repositories.show.name')
         = @repository.full_name
       p
-        strong.me-2 Язык
+        strong.me-2 = t('views_i18n.repositories.show.language')
         = @repository.language_text
       p
-        strong.me-2 Дата создания
+        strong.me-2 = t('views_i18n.repositories.show.created_at')
         = l @repository.created_at, format: :long
       p
-        strong.me-2 Дата обновления
+        strong.me-2 = t('views_i18n.repositories.show.updated_at')
         = l @repository.updated_at, format: :long
 
       hr
@@ -29,10 +29,10 @@
           thead
             tr
               th scope="col"
-              th scope="col" Статус
-              th scope="col" ID коммита
-              th scope="col" Проверка пройдена?
-              th scope="col" Дата создания
+              th scope="col" = t('views_i18n.repositories.show.checks.status')
+              th scope="col" = t('views_i18n.repositories.show.checks.commit_id')
+              th scope="col" = t('views_i18n.repositories.show.checks.passed')
+              th scope="col" = t('views_i18n.repositories.show.checks.created_at')
           tbody
             - @checks.each do |check|
               - short = check_short_commit_id(check)
@@ -53,5 +53,4 @@
                     = check.passed
                 td scope="row" = l check.created_at, format: :short
       - else
-        p.text-muted.mb-0
-          | Проверок ещё нет — запустите первую с помощью кнопки «Проверить» выше.
+        p.text-muted.mb-0 = t('views_i18n.repositories.show.checks_empty')

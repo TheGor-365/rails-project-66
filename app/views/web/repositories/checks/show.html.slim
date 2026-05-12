@@ -4,32 +4,32 @@
       .mb-4
         h1
 
-      = link_to 'Перейти к репозиторию',
+      = link_to t('views_i18n.repositories.check.back_to_repository'),
                 repository_path(@repository),
                 class: 'btn btn-primary mb-4'
 
-      h1 = "Проверка ##{@check.id}"
+      h1 = t('views_i18n.repositories.check.title', id: @check.id)
 
       - short = check_short_commit_id(@check)
       - url = check_github_commit_url(@check)
 
       table.table
         tr
-          td Дата создания
+          td = t('views_i18n.repositories.check.created_at')
           td = l @check.created_at, format: :long
         tr
-          td Статус
+          td = t('views_i18n.repositories.check.status')
           td = check_status_text(@check)
         tr
-          td Проверка пройдена
+          td = t('views_i18n.repositories.check.passed')
           td
             - unless @check.passed.nil?
               = @check.passed
         tr
-          td Количество замечаний
+          td = t('views_i18n.repositories.check.violations_count')
           td = @check.violations_count
         tr
-          td ID коммита
+          td = t('views_i18n.repositories.check.commit_id')
           td
             - if short.present? && url.present?
               = link_to short,
@@ -43,9 +43,9 @@
         table.table.table-hover.mb-5
           thead
             tr
-              th Сообщение
-              th Идентификатор правила
-              th Строка и символ
+              th = t('views_i18n.repositories.check.message')
+              th = t('views_i18n.repositories.check.rule')
+              th = t('views_i18n.repositories.check.location')
           tbody
             - offenses_by_file.each do |file|
               tr

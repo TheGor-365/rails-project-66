@@ -1,7 +1,7 @@
 doctype html
 html.h-100
   head
-    title = content_for?(:title) ? yield(:title) : 'Hexlet Github Quality'
+    title = content_for?(:title) ? yield(:title) : t('views_i18n.app.name')
     meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
     meta name="apple-mobile-web-app-capable" content="yes"
     meta name="keywords" content="template language"
@@ -25,7 +25,7 @@ html.h-100
       .d-flex.flex-wrap.align-items-center.py-2.border-bottom
         .navbar.navbar-expand-md.navbar-light.me-auto
           = link_to root_path, class: 'navbar-brand me-md-4' do
-            | Hexlet Github Quality
+            = t('views_i18n.app.name')
 
           button.navbar-toggler(
             type="button"
@@ -40,9 +40,9 @@ html.h-100
           #navbarToggler.collapse.navbar-collapse
             ul.nav.nav-pills.flex-grow-1.navbar-nav.me-auto
               li.nav-item.me-2
-                = link_to 'Главная', root_path, class: 'nav-link text-dark'
+                = link_to t('views_i18n.app.nav.home'), root_path, class: 'nav-link text-dark'
               li.nav-item.me-2
-                = link_to 'Репозитории', repositories_path, class: 'nav-link text-dark'
+                = link_to t('views_i18n.app.nav.repositories'), repositories_path, class: 'nav-link text-dark'
 
         ul.nav.nav-pills
           - if current_user
@@ -56,14 +56,14 @@ html.h-100
                               height: 24
                 = current_user.name.presence || current_user.email
             li.nav-item
-              = button_to 'Выйти',
+              = button_to t('views_i18n.app.nav.logout'),
                           logout_path,
                           method: :delete,
                           class: 'nav-link link-dark',
                           form: { class: 'button_to m-0', data: { turbo: false } }
           - else
             li.nav-item
-              = button_to 'Войти через GitHub',
+              = button_to t('views_i18n.app.nav.login_github'),
                           '/auth/github',
                           method: :post,
                           class: 'nav-link link-dark',
