@@ -5,7 +5,9 @@ require 'octokit'
 class GithubClient
   class << self
     def repos(access_token:, per_page: 100)
-      client(access_token).repos(per_page:)
+      github_client = client(access_token)
+      github_client.auto_paginate = true
+      github_client.repos(per_page:)
     end
 
     def repo(github_id:, access_token:)
