@@ -26,6 +26,9 @@ ru:
         title: "Добавить репозиторий"
         github_label: "Github *"
         submit: "Создать"
+        search_label: "Поиск репозитория"
+        search_placeholder: "Введите часть названия (например, rails)"
+        search_count: "Показано %{shown} из %{total}"
       show:
         run_check: "Проверить"
         name: "Название"
