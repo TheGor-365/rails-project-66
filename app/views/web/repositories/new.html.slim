@@ -11,12 +11,29 @@
           - @repository.errors.full_messages.each do |message|
             li = message
 
-    .mb-3
+    .mb-3(
+      data-controller="repository-search"
+      data-repository-search-count-template-value=t('views_i18n.repositories.new.search_count', shown: '__SHOWN__', total: '__TOTAL__')
+    )
+      label.form-label for="github_repository_search" = t('views_i18n.repositories.new.search_label')
+      input#github_repository_search.form-control.mb-3(
+        type="search"
+        autocomplete="off"
+        placeholder=t('views_i18n.repositories.new.search_placeholder')
+        data-repository-search-target="query"
+        data-action="input->repository-search#filter"
+      )
+
       - repository_options = @github_repositories.map { |repo| [repo.full_name, repo.id] }
       = form.label :github_id, t('views_i18n.repositories.new.github_label'), class: 'form-label'
       = form.select :github_id,
                     options_for_select(repository_options, @repository.github_id),
                     { include_blank: true },
-                    class: 'form-select'
+                    class: 'form-select',
+                    data: { repository_search_target: 'select' }
+      p.form-text(
+        data-repository-search-target="count"
+        aria-live="polite"
+      ) = t('views_i18n.repositories.new.search_count', shown: @github_repositories.size, total: @github_repositories.size)
 
     = form.submit t('views_i18n.repositories.new.submit'), class: 'btn btn-primary'
