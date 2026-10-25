@@ -37,6 +37,10 @@
                         target: '_blank',
                         rel: 'noopener'
 
+      - if @check.parsed_output.is_a?(Hash) && @check.parsed_output['summary'].is_a?(Hash)
+        - inspected_count = @check.parsed_output.dig('summary', 'inspected_file_count')
+        p.text-muted.mt-3 = t('views_i18n.repositories.check.inspected_files', count: inspected_count)
+
       - offenses_by_file = @check.offenses_by_file
 
       - if offenses_by_file.present?
@@ -50,11 +54,9 @@
             - offenses_by_file.each do |file|
               tr
                 td colspan="3"
-                  - if short.present? && file[:path].present? && !file[:path].start_with?('/')
-                    = link_to file[:path],
-                              "https://github.com/#{@repository.full_name}/tree/#{short}/#{file[:path]}",
-                              target: '_blank',
-                              rel: 'noopener'
+                  - file_url = check_github_file_url(@check, file[:path])
+                  - if file_url.present?
+                    = link_to file[:path], file_url, target: '_blank', rel: 'noopener'
                   - else
                     = file[:path]
 
@@ -63,13 +65,12 @@
                   td = offense[:message]
                   td = offense[:rule]
                   td
-                    - if offense[:line].present? && offense[:column].present?
-                      = "#{offense[:line]}:#{offense[:column]}"
-                    - elsif offense[:line].present?
-                      = offense[:line]
+                    - position = [offense[:line], offense[:column]].compact.join(':')
+                    - line_url = check_github_file_url(@check, file[:path], line: offense[:line])
+                    - if line_url.present? && offense[:line].present?
+                      = link_to position, line_url, target: '_blank', rel: 'noopener'
+                    - else
+                      = position
       - elsif @check.parsed_output.blank? && @check.output.present?
         pre.mt-4.text-break = @check.output
 
-      - if @check.parsed_output.is_a?(Hash) && @check.parsed_output['summary'].is_a?(Hash)
-        - inspected_count = @check.parsed_output.dig('summary', 'inspected_file_count')
-        p.text-muted.mt-3 = t('views_i18n.repositories.check.inspected_files', count: inspected_count)
