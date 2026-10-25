@@ -4,13 +4,20 @@ class CreateRepositoryWebhookJob < ApplicationJob
   queue_as :default
 
   def perform(repository_id)
+    return unless Rails.env.production?
+
+    secret = ENV.fetch('GITHUB_WEBHOOK_SECRET', '').to_s
+    host = ENV.fetch('APP_HOST', '').to_s
+    return if secret.blank? || host.blank? || host == 'localhost'
+
     repository = Repository.find(repository_id)
     github_client = ApplicationContainer[:github_client]
 
     github_client.create_webhook(
       access_token: repository.user.token,
       repo_full_name: repository.full_name,
-      webhook_url: webhook_url
+      webhook_url: webhook_url,
+      webhook_secret: secret
     )
   end
 
