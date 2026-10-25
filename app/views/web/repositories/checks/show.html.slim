@@ -50,7 +50,7 @@
             - offenses_by_file.each do |file|
               tr
                 td colspan="3"
-                  - if @check.short_commit_id.present? && file[:path].present?
+                  - if short.present? && file[:path].present? && !file[:path].start_with?('/')
                     = link_to file[:path],
                               "https://github.com/#{@repository.full_name}/tree/#{short}/#{file[:path]}",
                               target: '_blank',
@@ -67,5 +67,9 @@
                       = "#{offense[:line]}:#{offense[:column]}"
                     - elsif offense[:line].present?
                       = offense[:line]
-      - elsif @check.output.present?
-        pre.mt-4 = @check.output
+      - elsif @check.parsed_output.blank? && @check.output.present?
+        pre.mt-4.text-break = @check.output
+
+      - if @check.parsed_output.is_a?(Hash) && @check.parsed_output['summary'].is_a?(Hash)
+        - inspected_count = @check.parsed_output.dig('summary', 'inspected_file_count')
+        p.text-muted.mt-3 = t('views_i18n.repositories.check.inspected_files', count: inspected_count)
