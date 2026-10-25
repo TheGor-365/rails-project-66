@@ -69,7 +69,7 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
     repo = build_repo_for(user)
     output = {
       'files' => [
-        { 'path' => 'app/example.rb', 'offenses' => [
+        { 'path' => "/tmp/github-quality-repos/repo-#{repo.id}-a1b2c3d4/app/example.rb", 'offenses' => [
           { 'message' => 'A lint finding', 'cop_name' => 'Lint/Syntax',
             'location' => { 'line' => 1, 'column' => 1 } }
         ] }
@@ -84,9 +84,11 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
     get repository_check_path(repo, check)
 
     assert_response :success
-    assert_select 'a[href*="github.com/TheGor-365/example/tree/abc123d/app/example.rb"]'
+    assert_select 'a[href="https://github.com/TheGor-365/example/blob/abc123def456/app/example.rb"]'
+    assert_select 'a[href="https://github.com/TheGor-365/example/blob/abc123def456/app/example.rb#L1"]'
     assert_select 'td', text: 'A lint finding'
     assert_select 'p', text: /Files inspected|Файлов проверено/
+    assert_select 'a', text: /tmp\/github-quality-repos/, count: 0
   end
 
   test 'show does not print raw JSON for a successful lint run' do
