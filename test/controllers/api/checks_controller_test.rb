@@ -73,9 +73,12 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
-  test 'non-push events are ignored' do
-    post_signed_hook({}, event: 'ping')
-    assert_response :unprocessable_entity
+  test 'signed ping is acknowledged without enqueuing a check' do
+    assert_no_enqueued_jobs do
+      post_signed_hook({}, event: 'ping')
+    end
+
+    assert_response :no_content
   end
 
   test 'nonexistent repository returns not found' do
