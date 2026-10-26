@@ -8,7 +8,7 @@ class Api::ChecksController < ApplicationController
   def create
     payload = request.raw_post
     return head :unauthorized unless valid_github_signature?(payload)
-    return head :unprocessable_content unless request.headers['X-GitHub-Event'] == 'push'
+    return head :no_content unless request.headers['X-GitHub-Event'] == 'push'
 
     data = JSON.parse(payload)
     github_repo_id = data.dig('repository', 'id')
