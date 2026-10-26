@@ -40,11 +40,17 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test 'new returns success and uses stubbed github client' do
+  test 'new returns success and offers searchable supported GitHub repositories' do
     sign_in!
     get new_repository_path
 
     assert_response :success
+    assert_select '[data-controller="repository-search"]', 1
+    assert_select 'input#github_repository_search[type="search"][data-repository-search-target="query"]', 1
+    assert_select 'select#repository_github_id[data-repository-search-target="select"]', 1
+    assert_select 'select#repository_github_id option[value="9100001"]', text: 'TheGor-365/rails-project'
+    assert_select 'select#repository_github_id option[value="9100002"]', text: 'TheGor-365/frontend-check'
+    assert_select '[data-repository-search-target="count"]', text: /2/
   end
 
   test 'create adds repository and redirects' do
