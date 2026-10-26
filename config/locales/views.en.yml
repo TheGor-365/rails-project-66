@@ -48,6 +48,7 @@ en:
         status: "Статус"
         passed: "Проверка пройдена"
         violations_count: "Количество замечаний"
+        inspected_files: "Files inspected: %{count}"
         commit_id: "ID коммита"
         message: "Сообщение"
         rule: "Идентификатор правила"

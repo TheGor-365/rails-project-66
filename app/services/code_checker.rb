@@ -3,6 +3,7 @@
 require 'fileutils'
 require 'json'
 require 'securerandom'
+require 'tmpdir'
 require 'uri'
 
 class CodeChecker
@@ -65,8 +66,13 @@ class CodeChecker
   end
 
   def clone_repository
-    default_dir = Rails.root.join('tmp/repos').to_s
-    base_dir = Pathname.new(ENV.fetch('REPOS_DIR', default_dir))
+    # Repositories inside Rails.root/tmp are excluded by the app's RuboCop config.
+    default_dir = File.join(Dir.tmpdir, 'github-quality-repos')
+    base_dir = Pathname.new(ENV.fetch('REPOS_DIR', default_dir)).expand_path
+    if base_dir.to_s.start_with?("#{Rails.root.join('tmp')}/")
+      Rails.logger.warn('[CodeChecker] REPOS_DIR is excluded by RuboCop; using system temp directory')
+      base_dir = Pathname.new(default_dir)
+    end
     FileUtils.mkdir_p(base_dir)
 
     dir = base_dir.join("repo-#{@repository.id}-#{SecureRandom.hex(4)}")
@@ -109,7 +115,8 @@ class CodeChecker
     result = command_runner.capture3(*command, chdir: Rails.root.to_s)
 
     offenses_count = rubocop_offenses_count(result.stdout)
-    success = result.status.success? && offenses_count.zero?
+    inspected = rubocop_inspected_files_count(result.stdout)
+    success = result.status.success? && offenses_count.zero? && inspected.positive?
 
     [result.stdout, offenses_count, success]
   end
@@ -129,7 +136,8 @@ class CodeChecker
     result = command_runner.capture3(*command, chdir: Rails.root.to_s)
 
     offenses_count = eslint_offenses_count(result.stdout)
-    success = result.status.success? && offenses_count.zero?
+    inspected = eslint_inspected_files_count(result.stdout)
+    success = result.status.success? && offenses_count.zero? && inspected.positive?
 
     [result.stdout, offenses_count, success]
   end

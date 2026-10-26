@@ -25,6 +25,16 @@ module CodeCheckerSupport
     summary.fetch('offense_count', 0).to_i
   end
 
+  def rubocop_inspected_files_count(output)
+    data = parse_json_output(output, parser_name: 'rubocop')
+    data.is_a?(Hash) ? data.fetch('summary', {}).fetch('inspected_file_count', 0).to_i : 0
+  end
+
+  def eslint_inspected_files_count(output)
+    data = parse_json_output(output, parser_name: 'eslint')
+    data.is_a?(Array) ? data.length : 0
+  end
+
   def eslint_offenses_count(output)
     data = parse_json_output(output, parser_name: 'eslint')
     return 0 unless data.is_a?(Array)

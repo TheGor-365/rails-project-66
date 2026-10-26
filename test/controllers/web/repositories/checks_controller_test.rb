@@ -63,4 +63,47 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test 'show renders RuboCop offenses without raising an error' do
+    user = sign_in!
+    repo = build_repo_for(user)
+    output = {
+      'files' => [
+        { 'path' => "/tmp/github-quality-repos/repo-#{repo.id}-a1b2c3d4/app/example.rb", 'offenses' => [
+          { 'message' => 'A lint finding', 'cop_name' => 'Lint/Syntax',
+            'location' => { 'line' => 1, 'column' => 1 } }
+        ] }
+      ],
+      'summary' => { 'offense_count' => 1, 'inspected_file_count' => 1 }
+    }.to_json
+    check = repo.checks.create!(
+      commit_id: 'abc123def456', status: 'failed', passed: false,
+      violations_count: 1, output:
+    )
+
+    get repository_check_path(repo, check)
+
+    assert_response :success
+    assert_select 'a[href="https://github.com/TheGor-365/example/blob/abc123def456/app/example.rb"]'
+    assert_select 'a[href="https://github.com/TheGor-365/example/blob/abc123def456/app/example.rb#L1"]'
+    assert_select 'td', text: 'A lint finding'
+    assert_select 'p', text: /Files inspected|Файлов проверено/
+    assert_select 'a', text: /tmp\/github-quality-repos/, count: 0
+  end
+
+  test 'show does not print raw JSON for a successful lint run' do
+    user = sign_in!
+    repo = build_repo_for(user)
+    check = repo.checks.create!(
+      commit_id: 'abc123def456', status: 'passed', passed: true,
+      violations_count: 0,
+      output: { 'files' => [], 'summary' => { 'offense_count' => 0, 'inspected_file_count' => 5 } }.to_json
+    )
+
+    get repository_check_path(repo, check)
+
+    assert_response :success
+    assert_select 'pre', count: 0
+    assert_select 'p', text: /5/
+  end
 end

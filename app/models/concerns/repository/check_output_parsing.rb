@@ -20,16 +20,20 @@ module Repository::CheckOutputParsing
 
   private
 
+  def normalize_repository_file_path(path)
+    # RuboCop/ESLint return absolute checkout paths. Strip only our generated
+    # checkout directory so historical results can link to GitHub files.
+    path.to_s.sub(%r{\A/(?:[^/]+/)*repo-\d+-[0-9a-f]{8}/}, '')
+  end
+
   def rubocop_payload?(data)
     data.is_a?(Hash) && data['files'].is_a?(Array)
   end
 
   def rubocop_offenses_by_file(data)
-    data['files'].map do |file|
-      {
-        path: file['path'],
-        offenses: rubocop_file_offenses(file)
-      }
+    data['files'].filter_map do |file|
+      offenses = rubocop_file_offenses(file)
+      { path: normalize_repository_file_path(file['path']), offenses: } if offenses.any?
     end
   end
 
@@ -45,11 +49,9 @@ module Repository::CheckOutputParsing
   end
 
   def eslint_offenses_by_file(data)
-    data.map do |file|
-      {
-        path: file['filePath'] || file['path'],
-        offenses: eslint_file_offenses(file)
-      }
+    data.filter_map do |file|
+      offenses = eslint_file_offenses(file)
+      { path: normalize_repository_file_path(file['filePath'] || file['path']), offenses: } if offenses.any?
     end
   end
 
