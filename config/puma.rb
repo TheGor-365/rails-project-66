@@ -11,3 +11,4 @@ workers Integer(ENV.fetch('WEB_CONCURRENCY', 0))
 preload_app!
 
 plugin :tmp_restart
+plugin :solid_queue if ENV.fetch('SOLID_QUEUE_IN_PUMA', ENV.fetch('RAILS_ENV', 'production') == 'production' ? 'true' : 'false') == 'true'

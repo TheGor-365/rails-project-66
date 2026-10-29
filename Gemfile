@@ -61,3 +61,5 @@ end
 gem 'minitest', '< 6'
 
 gem 'ostruct', '~> 0.6.3'
+
+gem 'solid_queue', '= 1.7.0'
