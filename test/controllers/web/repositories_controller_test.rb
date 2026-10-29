@@ -38,6 +38,8 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
     get repositories_path
 
     assert_response :success
+    assert_select '.gq-page', count: 1
+    assert_select '.bg-white', count: 0
   end
 
   test 'new returns success and offers searchable supported GitHub repositories' do

@@ -87,6 +87,10 @@ class Web::Repositories::ChecksControllerTest < ActionDispatch::IntegrationTest
     assert_select 'a[href="https://github.com/TheGor-365/example/blob/abc123def456/app/example.rb"]'
     assert_select 'a[href="https://github.com/TheGor-365/example/blob/abc123def456/app/example.rb#L1"]'
     assert_select 'td', text: 'A lint finding'
+    assert_select '.gq-report__workspace', count: 1
+    assert_select '[data-controller="report-filter"]', count: 1
+    assert_select '.gq-report__file', count: 1
+    assert_select '.bg-white', count: 0
     assert_select 'p', text: /Files inspected|Файлов проверено/
     assert_select 'a', text: /tmp\/github-quality-repos/, count: 0
   end
