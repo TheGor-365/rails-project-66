@@ -40,7 +40,7 @@
   color: var(--gq-muted);
 }
 
-.gq-button {
+.gq-app .gq-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -49,16 +49,16 @@
   border-radius: var(--gq-radius-sm);
   background: var(--gq-accent);
   border: 1px solid var(--gq-accent);
-  color: var(--gq-accent-ink) !important;
+  color: var(--gq-accent-ink);
   text-decoration: none;
   font-weight: 670;
   font-size: 13px;
   line-height: 1.25;
 }
 
-.gq-button--outline {
+.gq-app .gq-button--outline {
   border-color: var(--gq-border);
-  color: var(--gq-text) !important;
+  color: var(--gq-text);
   background: var(--gq-surface);
 }
 
