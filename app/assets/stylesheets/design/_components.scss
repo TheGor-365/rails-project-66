@@ -1,0 +1,145 @@
+// Reusable primitives for gradual replacement of Bootstrap markup.
+.gq-panel {
+  min-width: 0;
+  padding: clamp(18px, 2.5vw, 26px);
+  border: 1px solid var(--gq-border);
+  background: var(--gq-surface);
+  border-radius: var(--gq-radius-md);
+}
+
+.gq-panel--raised {
+  background: var(--gq-surface-raised);
+}
+
+.gq-page {
+  width: calc(100% - (2 * var(--gq-page-gutter)));
+  max-width: var(--gq-content-max);
+  margin: 0 auto;
+  padding-block: clamp(28px, 4vw, 48px) 64px;
+}
+
+.gq-page__eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gq-accent);
+}
+
+.gq-page__title {
+  margin: 0;
+  color: var(--gq-text);
+  font-size: clamp(28px, 3vw, 38px);
+  font-weight: 720;
+  line-height: 1.18;
+}
+
+.gq-page__lede {
+  max-width: 70ch;
+  margin: 12px 0 0;
+  color: var(--gq-muted);
+}
+
+.gq-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 11px 16px;
+  border-radius: var(--gq-radius-sm);
+  background: var(--gq-accent);
+  border: 1px solid var(--gq-accent);
+  color: var(--gq-accent-ink) !important;
+  text-decoration: none;
+  font-weight: 670;
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.gq-button--outline {
+  border-color: var(--gq-border);
+  color: var(--gq-text) !important;
+  background: var(--gq-surface);
+}
+
+.gq-button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.gq-metric {
+  min-width: 0;
+  padding: 20px;
+  background: var(--gq-surface);
+  border: 1px solid var(--gq-border);
+  border-radius: var(--gq-radius-md);
+}
+
+.gq-metric__label {
+  font-size: 12px;
+  color: var(--gq-muted);
+}
+
+.gq-metric__value {
+  margin-top: 12px;
+  font-size: clamp(25px, 2.5vw, 32px);
+  font-weight: 720;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.04em;
+}
+
+.gq-status {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--gq-muted);
+}
+
+.gq-status::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.gq-status--success { color: var(--gq-success); }
+.gq-status--warning { color: var(--gq-warning); }
+.gq-status--danger { color: var(--gq-danger); }
+
+.gq-field {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 13px;
+  color: var(--gq-text);
+  background: var(--gq-bg);
+  border: 1px solid var(--gq-border);
+  border-radius: var(--gq-radius-sm);
+}
+
+.gq-field::placeholder { color: var(--gq-soft); }
+
+.gq-data-row {
+  min-width: 0;
+  padding: 15px 18px;
+  border-bottom: 1px solid var(--gq-border);
+}
+
+.gq-data-row:last-child { border-bottom: 0; }
+
+.gq-empty {
+  padding: 38px 24px;
+  text-align: center;
+  color: var(--gq-muted);
+}
+
+.gq-break-anywhere { overflow-wrap: anywhere; }
+.gq-tabular { font-variant-numeric: tabular-nums; }
+
+@media (max-width: 767.98px) {
+  .gq-page { padding-bottom: 40px; }
+  .gq-panel { padding: 16px; }
+}

@@ -1,0 +1,77 @@
+html {
+  scroll-behavior: auto;
+}
+
+body.gq-app {
+  min-width: 320px;
+  background: var(--gq-bg);
+  color: var(--gq-text);
+  font-family: var(--gq-font-sans);
+  font-size: 15px;
+  line-height: 1.55;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.gq-app *,
+.gq-app *::before,
+.gq-app *::after {
+  box-sizing: border-box;
+}
+
+.gq-app a {
+  color: var(--gq-accent);
+  text-underline-offset: 3px;
+}
+
+.gq-app a:hover {
+  color: var(--gq-accent-strong);
+}
+
+.gq-app :focus-visible {
+  outline: 2px solid var(--gq-accent);
+  outline-offset: 3px;
+}
+
+.gq-app h1,
+.gq-app h2,
+.gq-app h3 {
+  letter-spacing: -.025em;
+  text-wrap: balance;
+}
+
+.gq-app code,
+.gq-app kbd,
+.gq-app pre,
+.gq-mono {
+  font-family: var(--gq-font-mono);
+}
+
+.gq-app pre,
+.gq-app .text-break {
+  overflow-wrap: anywhere;
+}
+
+.gq-container {
+  width: calc(100% - (2 * var(--gq-page-gutter)));
+  max-width: var(--gq-content-max);
+  margin-inline: auto;
+  min-width: 0;
+}
+
+.gq-main {
+  width: 100%;
+  min-width: 0;
+  flex: 1 0 auto;
+}
+
+// Bootstrap remains for existing views during gradual page migration.
+// Avoid any global !important rules: old markup will be removed per screen.
+.gq-app .table {
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--gq-text);
+  --bs-table-border-color: var(--gq-border);
+  --bs-table-hover-bg: var(--gq-surface-hover);
+  --bs-table-hover-color: var(--gq-text);
+}

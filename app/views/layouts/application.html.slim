@@ -1,78 +1,25 @@
 doctype html
-html.h-100
+html.h-100 lang=I18n.locale data-gq-theme="dark"
   head
-    title = content_for?(:title) ? yield(:title) : t('views_i18n.app.name')
-    meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    meta name="apple-mobile-web-app-capable" content="yes"
-    meta name="keywords" content="template language"
-    meta name="author" content="author"
+    title = content_for?(:title) ? yield(:title) : 'GitHub Quality'
+    meta name="viewport" content="width=device-width, initial-scale=1"
+    meta name="theme-color" content="#0B111D"
+    meta name="description" content="GitHub Quality — repository analysis and code-quality reports"
 
     = csrf_meta_tags
     = csp_meta_tag
 
     = yield :head
 
-    link rel="manifest" href="/manifest.json"
-    link rel="icon" href="/icon.png" type="image/png"
     link rel="icon" href="/icon.svg" type="image/svg+xml"
-    link rel="apple-touch-icon" href="/icon.png"
 
     = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
     = javascript_include_tag 'application', 'data-turbo-track': 'reload', type: 'module'
 
-  body.d-flex.flex-column.h-100
-    .container.mb-2
-      .d-flex.flex-wrap.align-items-center.py-2.border-bottom
-        .navbar.navbar-expand-md.navbar-light.me-auto
-          = link_to root_path, class: 'navbar-brand me-md-4' do
-            = t('views_i18n.app.name')
+  body.gq-app.d-flex.flex-column.min-vh-100
+    = render 'shared/ui/app_header'
 
-          button.navbar-toggler(
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarToggler"
-            aria-controls="navbarToggler"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          )
-            span.navbar-toggler-icon
-
-          #navbarToggler.collapse.navbar-collapse
-            ul.nav.nav-pills.flex-grow-1.navbar-nav.me-auto
-              li.nav-item.me-2
-                = link_to t('views_i18n.app.nav.home'), root_path, class: 'nav-link text-dark'
-              li.nav-item.me-2
-                = link_to t('views_i18n.app.nav.repositories'), repositories_path, class: 'nav-link text-dark'
-
-        ul.nav.nav-pills
-          - if current_user
-            li.nav-item
-              span.nav-link.text-secondary.d-flex.align-items-center
-                - if current_user.image_url.present?
-                  = image_tag current_user.image_url,
-                              alt: current_user.nickname || current_user.email,
-                              class: 'rounded-circle me-2',
-                              width: 24,
-                              height: 24
-                = current_user.name.presence || current_user.email
-            li.nav-item
-              = button_to t('views_i18n.app.nav.logout'),
-                          logout_path,
-                          method: :delete,
-                          class: 'nav-link link-dark',
-                          form: { class: 'button_to m-0', data: { turbo: false } }
-          - else
-            li.nav-item
-              = button_to t('views_i18n.app.nav.login_github'),
-                          '/auth/github',
-                          method: :post,
-                          class: 'nav-link link-dark',
-                          form: { class: 'button_to m-0', data: { turbo: false } }
-
-    main
+    main#gq-main.gq-main
       = yield
 
-    footer.bg-dark.text-light.mt-auto
-      .container-xl
-        .row.py-2
-          | © Hexlet Ltd, 2026
+    = render 'shared/ui/app_footer'

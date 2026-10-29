@@ -1,0 +1,60 @@
+// Design system v0.1. Graphite/Glacier is the primary dark theme.
+// Porcelain/Cobalt is the future light theme; Deep Slate/Mint informs success states.
+:root,
+html[data-gq-theme='dark'] {
+  color-scheme: dark;
+  --gq-bg: #0b111d;
+  --gq-surface: #121d2b;
+  --gq-surface-raised: #172536;
+  --gq-surface-hover: #1c2b3f;
+  --gq-border: #253244;
+  --gq-text: #f1f5fb;
+  --gq-muted: #a1aec0;
+  --gq-soft: #73849b;
+  --gq-accent: #8aafff;
+  --gq-accent-strong: #aec8ff;
+  --gq-accent-ink: #081423;
+  --gq-success: #58c7a4;
+  --gq-warning: #f3bc73;
+  --gq-danger: #e87786;
+  --gq-radius-sm: 8px;
+  --gq-radius-md: 12px;
+  --gq-radius-lg: 16px;
+  --gq-gap-xs: 4px;
+  --gq-gap-sm: 8px;
+  --gq-gap-md: 16px;
+  --gq-gap-lg: 24px;
+  --gq-gap-xl: 32px;
+  --gq-content-max: 1380px;
+  --gq-page-gutter: clamp(16px, 3.25vw, 44px);
+  --gq-font-sans: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --gq-font-mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+  --gq-ease: cubic-bezier(.22, 1, .36, 1);
+  --gq-duration: 180ms;
+
+  --bs-body-bg: var(--gq-bg);
+  --bs-body-color: var(--gq-text);
+  --bs-secondary-color: var(--gq-muted);
+  --bs-border-color: var(--gq-border);
+  --bs-link-color: var(--gq-accent);
+  --bs-link-hover-color: var(--gq-accent-strong);
+}
+
+// Light option will be activated only after all templates are theme-safe.
+html[data-gq-theme='light'] {
+  color-scheme: light;
+  --gq-bg: #f5f7fb;
+  --gq-surface: #ffffff;
+  --gq-surface-raised: #edf1f8;
+  --gq-surface-hover: #e9f0fc;
+  --gq-border: #d8e0ee;
+  --gq-text: #172234;
+  --gq-muted: #53647c;
+  --gq-soft: #6b7b90;
+  --gq-accent: #2857d6;
+  --gq-accent-strong: #1a42ac;
+  --gq-accent-ink: #ffffff;
+  --gq-success: #187b62;
+  --gq-warning: #985519;
+  --gq-danger: #b4324a;
+}
