@@ -4,6 +4,7 @@ require 'active_support/core_ext/integer/time'
 require 'ipaddr'
 
 Rails.application.configure do
+  config.active_job.queue_adapter = :solid_queue
   config.assume_ssl = true
   config.ssl_options = { redirect: { exclude: ->(request) { request.path == '/up' } } }
   config.force_ssl = true
