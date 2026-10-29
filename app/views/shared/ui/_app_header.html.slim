@@ -1,0 +1,39 @@
+header.gq-header
+  .gq-container.gq-header__inner
+    = link_to root_path, class: 'gq-brand', aria: { label: 'GitHub Quality' } do
+      span.gq-brand__mark aria-hidden="true"
+        svg viewBox="0 0 40 40" width="28" height="28" fill="none" focusable="false"
+          path d="M20 4 36 20 20 36 4 20 20 4Z" stroke="currentColor" stroke-width="2.5"
+          path d="M19 12 11 20 19 28" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+          path d="M21 28 29 20 21 12" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+          path d="m22 16-4 8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+      span.gq-brand__wordmark
+        | GitHub
+        span.gq-brand__accent = ' Quality'
+
+    nav.gq-header__nav aria-label="Main navigation"
+      = link_to t('views_i18n.app.nav.home'), root_path, class: "gq-header__link#{' is-active' if current_page?(root_path)}", aria: { current: ('page' if current_page?(root_path)) }
+      = link_to t('views_i18n.app.nav.repositories'), repositories_path, class: "gq-header__link#{' is-active' if request.path.start_with?('/repositories')}", aria: { current: ('page' if request.path.start_with?('/repositories')) }
+
+    .gq-header__account
+      - if current_user
+        span.gq-user
+          - if current_user.image_url.present?
+            = image_tag current_user.image_url, alt: '', class: 'gq-user__avatar', width: 30, height: 30
+          - else
+            span.gq-user__fallback aria-hidden="true" = (current_user.name.presence || current_user.email).to_s.first.upcase
+          span.gq-user__name = current_user.name.presence || current_user.email
+        = button_to t('views_i18n.app.nav.logout'), logout_path, method: :delete, class: 'gq-header__action', form: { class: 'gq-header__auth-form', data: { turbo: false } }
+      - else
+        = button_to t('views_i18n.app.nav.login_github'), '/auth/github', method: :post, class: 'gq-header__action gq-header__action--primary', form: { class: 'gq-header__auth-form', data: { turbo: false } }
+
+    details.gq-mobile-menu
+      summary.gq-mobile-menu__trigger aria-label="Menu"
+        i.bi.bi-list aria-hidden="true"
+      nav.gq-mobile-menu__panel aria-label="Mobile navigation"
+        = link_to t('views_i18n.app.nav.home'), root_path, class: 'gq-mobile-menu__link'
+        = link_to t('views_i18n.app.nav.repositories'), repositories_path, class: 'gq-mobile-menu__link'
+        - if current_user
+          = button_to t('views_i18n.app.nav.logout'), logout_path, method: :delete, class: 'gq-mobile-menu__link gq-mobile-menu__button', form: { data: { turbo: false } }
+        - else
+          = button_to t('views_i18n.app.nav.login_github'), '/auth/github', method: :post, class: 'gq-mobile-menu__link gq-mobile-menu__button', form: { data: { turbo: false } }
