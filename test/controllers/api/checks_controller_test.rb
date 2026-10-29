@@ -31,7 +31,7 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     )
   end
 
-  def post_signed_hook(payload, event: 'push', signature: nil)
+  def post_signed_hook(payload, event: 'push', signature: nil, delivery_id: SecureRandom.uuid)
     body = payload.is_a?(String) ? payload : payload.to_json
     signature ||= "sha256=#{OpenSSL::HMAC.hexdigest('SHA256', ENV.fetch('GITHUB_WEBHOOK_SECRET'), body)}"
     post api_checks_path,
@@ -39,6 +39,7 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
          headers: {
            'CONTENT_TYPE' => 'application/json',
            'X-GitHub-Event' => event,
+           'X-GitHub-Delivery' => delivery_id,
            'X-Hub-Signature-256' => signature
          }
   end
@@ -54,6 +55,63 @@ class Api::ChecksControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :accepted
+  end
+
+  test 'repeated delivery does not create another check or enqueue another job' do
+    repo = build_repo(github_id: 346)
+    payload = { 'repository' => { 'id' => repo.github_id }, 'after' => 'abc123def456' }
+    delivery_id = SecureRandom.uuid
+
+    assert_difference -> { repo.checks.count }, 1 do
+      assert_enqueued_jobs 1, only: RunRepositoryCheckJob do
+        post_signed_hook(payload, delivery_id:)
+      end
+    end
+    assert_response :accepted
+
+    assert_no_difference -> { repo.checks.count } do
+      assert_no_enqueued_jobs only: RunRepositoryCheckJob do
+        post_signed_hook(payload, delivery_id:)
+      end
+    end
+    assert_response :accepted
+  end
+
+  test 'another signed delivery creates another check' do
+    repo = build_repo(github_id: 347)
+    payload = { 'repository' => { 'id' => repo.github_id }, 'after' => 'abc123def456' }
+
+    assert_difference -> { repo.checks.count }, 2 do
+      post_signed_hook(payload)
+      post_signed_hook(payload)
+    end
+    assert_response :accepted
+  end
+
+  test 'missing delivery id is rejected without creating a check' do
+    repo = build_repo(github_id: 348)
+    payload = { 'repository' => { 'id' => repo.github_id }, 'after' => 'abc123def456' }
+
+    assert_no_difference -> { repo.checks.count } do
+      post_signed_hook(payload, delivery_id: nil)
+    end
+    assert_response :unprocessable_entity
+  end
+
+  test 'deleted branch push is acknowledged without creating a check' do
+    repo = build_repo(github_id: 349)
+    payload = {
+      'repository' => { 'id' => repo.github_id },
+      'after' => '0' * 40,
+      'deleted' => true
+    }
+
+    assert_no_difference -> { repo.checks.count } do
+      assert_no_enqueued_jobs only: RunRepositoryCheckJob do
+        post_signed_hook(payload)
+      end
+    end
+    assert_response :no_content
   end
 
   test 'unsigned webhooks are rejected' do
