@@ -1,0 +1,8 @@
+- if check.failed?
+  span.gq-status.gq-status--danger = check_status_text(check)
+- elsif check.finished? && check.passed == true
+  span.gq-status.gq-status--success = check_status_text(check)
+- elsif check.finished? && check.passed == false
+  span.gq-status.gq-status--warning = t('gq_ui.common.findings')
+- else
+  span.gq-status = check_status_text(check)

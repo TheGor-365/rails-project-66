@@ -1,56 +1,45 @@
-.mt-4.mb-5.pb-5
-  .container
-    .p-4.align-items-center.border.shadow.bg-white.rounded-3
-      .mb-4
-        h1 = @repository.full_name
+.gq-page
+  nav.gq-crumbs aria-label=t('gq_ui.common.breadcrumb')
+    = link_to t('views_i18n.repositories.index.title'), repositories_path
+    i.bi.bi-chevron-right aria-hidden="true"
+    span.gq-break-anywhere = @repository.full_name
 
-      = button_to t('views_i18n.repositories.show.run_check'),
-                  repository_checks_path(@repository),
-                  class: 'btn btn-primary mb-4',
-                  form: { data: { turbo: false } }
+  header.gq-page-heading
+    .gq-page-heading__copy
+      p.gq-eyebrow = t('gq_ui.repositories.detail_label')
+      h1.gq-page__title.gq-break-anywhere = @repository.full_name
+      p.gq-page__lede = t('gq_ui.repositories.history_intro')
+    = button_to t('views_i18n.repositories.show.run_check'), repository_checks_path(@repository), class: 'gq-button', form: { data: { turbo: false } }
 
-      p
-        strong.me-2 = t('views_i18n.repositories.show.name')
-        = @repository.full_name
-      p
-        strong.me-2 = t('views_i18n.repositories.show.language')
-        = @repository.language_text
-      p
-        strong.me-2 = t('views_i18n.repositories.show.created_at')
-        = l @repository.created_at, format: :long
-      p
-        strong.me-2 = t('views_i18n.repositories.show.updated_at')
-        = l @repository.updated_at, format: :long
+  .gq-repository-meta
+    .gq-panel
+      p.gq-metric__label = t('views_i18n.repositories.show.language')
+      strong = @repository.language_text
+    .gq-panel
+      p.gq-metric__label = t('views_i18n.repositories.show.created_at')
+      strong = l @repository.created_at, format: :short
+    .gq-panel
+      p.gq-metric__label = t('views_i18n.repositories.show.updated_at')
+      strong = l @repository.updated_at, format: :short
 
-      hr
+  section.gq-section
+    .gq-section-heading
+      h2 = t('gq_ui.repositories.check_history')
+      span.gq-count = @checks.size
 
-      - if @checks.present?
-        table.table.table-striped
-          thead
-            tr
-              th scope="col"
-              th scope="col" = t('views_i18n.repositories.show.checks.status')
-              th scope="col" = t('views_i18n.repositories.show.checks.commit_id')
-              th scope="col" = t('views_i18n.repositories.show.checks.passed')
-              th scope="col" = t('views_i18n.repositories.show.checks.created_at')
-          tbody
-            - @checks.each do |check|
-              - short = check_short_commit_id(check)
-              - url = check_github_commit_url(check)
-
-              tr
-                td scope="row"
-                  = link_to check.id, repository_check_path(@repository, check)
-                td scope="row" = check_status_text(check)
-                td scope="row"
-                  - if short.present? && url.present?
-                    = link_to short,
-                              url,
-                              target: '_blank',
-                              rel: 'noopener'
-                td scope="row"
-                  - unless check.passed.nil?
-                    = check.passed
-                td scope="row" = l check.created_at, format: :short
-      - else
-        p.text-muted.mb-0 = t('views_i18n.repositories.show.checks_empty')
+    - if @checks.any?
+      .gq-panel.gq-table-panel
+        .gq-check-list
+          - @checks.each do |check|
+            = link_to repository_check_path(@repository, check), class: 'gq-check-list__item' do
+              span.gq-check-list__name
+                strong = t('views_i18n.repositories.check.title', id: check.id)
+                small = l check.created_at, format: :short
+              = render 'shared/ui/check_status', check: check
+              - if check_short_commit_id(check).present?
+                code.gq-check-list__sha = check_short_commit_id(check)
+              i.bi.bi-arrow-up-right.gq-check-list__arrow aria-hidden="true"
+    - else
+      .gq-panel.gq-empty
+        i.bi.bi-clock-history.gq-empty__icon aria-hidden="true"
+        p = t('views_i18n.repositories.show.checks_empty')
