@@ -9,3 +9,6 @@ application.register("hello", HelloController)
 
 import RepositorySearchController from "./repository_search_controller"
 application.register("repository-search", RepositorySearchController)
+
+import ReportFilterController from "./report_filter_controller"
+application.register("report-filter", ReportFilterController)
