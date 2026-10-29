@@ -1,76 +1,121 @@
-.mt-4.mb-5.pb-5
-  .container
-    .p-4.align-items-center.border.shadow.bg-white.rounded-3
-      .mb-4
-        h1
+- offenses_by_file = @check.offenses_by_file
+- parsed = @check.parsed_output
+- summary_data = parsed.is_a?(Hash) ? parsed['summary'] : nil
+- inspected_count = summary_data.is_a?(Hash) ? summary_data['inspected_file_count'] : nil
+- short = check_short_commit_id(@check)
+- url = check_github_commit_url(@check)
 
-      = link_to t('views_i18n.repositories.check.back_to_repository'),
-                repository_path(@repository),
-                class: 'btn btn-primary mb-4'
+.gq-page.gq-report
+  nav.gq-crumbs aria-label=t('gq_ui.common.breadcrumb')
+    = link_to t('views_i18n.repositories.index.title'), repositories_path
+    i.bi.bi-chevron-right aria-hidden="true"
+    = link_to @repository.full_name, repository_path(@repository), class: 'gq-break-anywhere'
+    i.bi.bi-chevron-right aria-hidden="true"
+    span = t('views_i18n.repositories.check.title', id: @check.id)
 
-      h1 = t('views_i18n.repositories.check.title', id: @check.id)
+  header.gq-page-heading
+    .gq-page-heading__copy
+      p.gq-eyebrow = t('gq_ui.report.eyebrow')
+      h1.gq-page__title = t('views_i18n.repositories.check.title', id: @check.id)
+      p.gq-page__lede.gq-break-anywhere
+        = @repository.full_name
+        span.gq-report__dot ·
+        = l @check.created_at, format: :long
+    = link_to t('views_i18n.repositories.check.back_to_repository'), repository_path(@repository), class: 'gq-button gq-button--outline'
 
-      - short = check_short_commit_id(@check)
-      - url = check_github_commit_url(@check)
+  .gq-report__metrics
+    .gq-metric.gq-report__result
+      p.gq-metric__label = t('views_i18n.repositories.check.status')
+      = render 'shared/ui/check_status', check: @check
+    .gq-metric
+      p.gq-metric__label = t('gq_ui.report.inspected')
+      p.gq-metric__value = inspected_count.nil? ? '—' : inspected_count
+    .gq-metric
+      p.gq-metric__label = t('views_i18n.repositories.check.violations_count')
+      p.gq-metric__value = @check.violations_count.nil? ? '—' : @check.violations_count
+    .gq-metric
+      p.gq-metric__label = t('gq_ui.report.affected')
+      p.gq-metric__value = offenses_by_file.size
 
-      table.table
-        tr
-          td = t('views_i18n.repositories.check.created_at')
-          td = l @check.created_at, format: :long
-        tr
-          td = t('views_i18n.repositories.check.status')
-          td = check_status_text(@check)
-        tr
-          td = t('views_i18n.repositories.check.passed')
-          td
-            - unless @check.passed.nil?
-              = @check.passed
-        tr
-          td = t('views_i18n.repositories.check.violations_count')
-          td = @check.violations_count
-        tr
-          td = t('views_i18n.repositories.check.commit_id')
-          td
-            - if short.present? && url.present?
-              = link_to short,
-                        url,
-                        target: '_blank',
-                        rel: 'noopener'
+  .gq-panel.gq-report__meta
+    span = t('views_i18n.repositories.check.commit_id')
+    - if short.present? && url.present?
+      = link_to short, url, target: '_blank', rel: 'noopener noreferrer', class: 'gq-mono'
+    - else
+      code —
+    - unless inspected_count.nil?
+      p.gq-report__inspected = t('views_i18n.repositories.check.inspected_files', count: inspected_count)
 
-      - if @check.parsed_output.is_a?(Hash) && @check.parsed_output['summary'].is_a?(Hash)
-        - inspected_count = @check.parsed_output.dig('summary', 'inspected_file_count')
-        p.text-muted.mt-3 = t('views_i18n.repositories.check.inspected_files', count: inspected_count)
+  section.gq-section data-controller="report-filter" data-report-filter-count-template-value=t('gq_ui.report.showing', shown: '__SHOWN__', total: '__TOTAL__')
+    .gq-section-heading
+      h2 = t('gq_ui.report.findings_by_file')
+      span.gq-count = offenses_by_file.length
 
-      - offenses_by_file = @check.offenses_by_file
+    - if offenses_by_file.present?
+      .gq-report__workspace
+        aside.gq-panel.gq-report__sidebar
+          .gq-report__sidebar-top
+            label.gq-form-label for="gq-file-search" = t('gq_ui.report.search_label')
+            input#gq-file-search.gq-field(
+              type="search"
+              autocomplete="off"
+              placeholder=t('gq_ui.report.search_placeholder')
+              data-report-filter-target="query"
+              data-action="input->report-filter#filter"
+            )
+            p.gq-form-hint data-report-filter-target="count" aria-live="polite"
+          nav.gq-report__file-list aria-label=t('gq_ui.report.file_navigation')
+            - offenses_by_file.each_with_index do |file, index|
+              = link_to "#gq-report-file-#{index}", class: 'gq-report__file-link', data: { report_filter_target: 'nav', action: 'click->report-filter#openFile' } do
+                span.gq-break-anywhere = file[:path]
+                span.gq-count = file[:offenses].size
 
-      - if offenses_by_file.present?
-        table.table.table-hover.mb-5
-          thead
-            tr
-              th = t('views_i18n.repositories.check.message')
-              th = t('views_i18n.repositories.check.rule')
-              th = t('views_i18n.repositories.check.location')
-          tbody
-            - offenses_by_file.each do |file|
-              tr
-                td colspan="3"
-                  - file_url = check_github_file_url(@check, file[:path])
-                  - if file_url.present?
-                    = link_to file[:path], file_url, target: '_blank', rel: 'noopener'
-                  - else
-                    = file[:path]
+        .gq-report__content
+          .gq-report__toolbar
+            span = t('gq_ui.report.details')
+            .gq-report__actions
+              button.gq-text-button type="button" data-action="click->report-filter#expandAll" = t('gq_ui.report.expand')
+              button.gq-text-button type="button" data-action="click->report-filter#collapseAll" = t('gq_ui.report.collapse')
 
-              - file[:offenses].each do |offense|
-                tr
-                  td = offense[:message]
-                  td = offense[:rule]
-                  td
-                    - position = [offense[:line], offense[:column]].compact.join(':')
-                    - line_url = check_github_file_url(@check, file[:path], line: offense[:line])
-                    - if line_url.present? && offense[:line].present?
-                      = link_to position, line_url, target: '_blank', rel: 'noopener'
-                    - else
-                      = position
-      - elsif @check.parsed_output.blank? && @check.output.present?
-        pre.mt-4.text-break = @check.output
+          p.gq-panel.gq-empty data-report-filter-target="empty" hidden="hidden"
+            = t('gq_ui.report.no_match')
 
+          - offenses_by_file.each_with_index do |file, index|
+            details.gq-panel.gq-report__file id="gq-report-file-#{index}" open=(index.zero?) data-report-filter-target="file"
+              summary.gq-report__file-heading
+                strong.gq-break-anywhere = file[:path]
+                span.gq-count = file[:offenses].size
+
+              .gq-report__file-body
+                - file_url = check_github_file_url(@check, file[:path])
+                - if file_url.present?
+                  = link_to t('gq_ui.report.open_github'), file_url, target: '_blank', rel: 'noopener noreferrer', class: 'gq-report__source'
+                .gq-report__table-scroll
+                  table.gq-report__table
+                    thead
+                      tr
+                        th scope="col" = t('views_i18n.repositories.check.message')
+                        th scope="col" = t('views_i18n.repositories.check.rule')
+                        th scope="col" = t('views_i18n.repositories.check.location')
+                    tbody
+                      - file[:offenses].each do |offense|
+                        tr
+                          td = offense[:message]
+                          td
+                            code.gq-break-anywhere = offense[:rule]
+                          td.gq-report__position
+                            - position = [offense[:line], offense[:column]].compact.join(':')
+                            - line_url = check_github_file_url(@check, file[:path], line: offense[:line])
+                            - if line_url.present? && offense[:line].present?
+                              = link_to position, line_url, target: '_blank', rel: 'noopener noreferrer'
+                            - else
+                              = position
+    - else
+      .gq-panel.gq-empty
+        i.bi.bi-check2-circle.gq-empty__icon aria-hidden="true"
+        p = t('gq_ui.report.no_findings')
+
+    - if parsed.blank? && @check.output.present?
+      details.gq-panel.gq-report__raw
+        summary = t('gq_ui.report.raw')
+        pre = @check.output

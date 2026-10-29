@@ -1,23 +1,38 @@
-.container.py-5
-  h1.mb-3 = t('views_i18n.home.title')
-  h2.h5.mb-4 = t('views_i18n.home.subtitle')
+.gq-page.gq-home
+  section.gq-hero
+    .gq-hero__copy
+      p.gq-eyebrow GITHUB QUALITY / CODE INTELLIGENCE
+      h1.gq-hero__title = t('views_i18n.home.title')
+      h2.gq-hero__subtitle = t('views_i18n.home.subtitle')
+      p.gq-hero__description = t('gq_ui.home.description')
+      .gq-hero__actions
+        - if current_user
+          = link_to t('gq_ui.home.open_workspace'), repositories_path, class: 'gq-button'
+          span.gq-hero__account = t('views_i18n.home.signed_in_as')
+          strong.gq-hero__account-name = current_user.name.presence || current_user.email
+        - else
+          = button_to t('views_i18n.home.login_github'), '/auth/github', method: :post, class: 'gq-button', form: { data: { turbo: false } }
+      p.gq-hero__microcopy = t('gq_ui.home.supported')
 
-  - if current_user
-    p.mb-3
-      = "#{t('views_i18n.home.signed_in_as')} "
-      strong = current_user.email
-      | .
+    .gq-hero__illustration aria-hidden="true"
+      .gq-terminal__title
+        span.gq-terminal__light
+        span = t('gq_ui.home.workflow')
+        span.gq-terminal__lang RUBY / JS
+      .gq-terminal__content
+        - (1..3).each do |number|
+          .gq-terminal__line
+            span.gq-terminal__number = format('%02d', number)
+            span = t("gq_ui.home.step_#{number}_short")
 
-    .mb-3.d-flex.gap-2
-      = link_to t('views_i18n.home.repositories'), repositories_path, class: 'btn btn-primary'
-      = button_to t('views_i18n.home.logout'),
-                  logout_path,
-                  method: :delete,
-                  data: { turbo: false },
-                  class: 'btn btn-outline-secondary'
-  - else
-    = button_to t('views_i18n.home.login_github'),
-                '/auth/github',
-                method: :post,
-                data: { turbo: false },
-                class: 'btn btn-primary'
+  section.gq-home__steps aria-label=t('gq_ui.home.section')
+    .gq-section-heading
+      .gq-section-heading__title
+        p.gq-eyebrow = t('gq_ui.home.eyebrow')
+        h3 = t('gq_ui.home.section')
+    .gq-home__step-grid
+      - (1..3).each do |number|
+        article.gq-panel.gq-home__step
+          span.gq-home__step-number = format('%02d', number)
+          h4 = t("gq_ui.home.step_#{number}_title")
+          p = t("gq_ui.home.step_#{number}_body")
