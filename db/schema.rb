@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_04_181040) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_29_180000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -38,7 +38,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_04_181040) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "aasm_state", default: "pending", null: false
+    t.string "github_delivery_id"
     t.index ["aasm_state"], name: "index_repository_checks_on_aasm_state"
+    t.index ["github_delivery_id"], name: "index_repository_checks_on_github_delivery_id", unique: true
     t.index ["repository_id"], name: "index_repository_checks_on_repository_id"
   end
 
