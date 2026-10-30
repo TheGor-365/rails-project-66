@@ -2,16 +2,34 @@ doctype html
 html.h-100 lang=I18n.locale data-gq-theme="dark"
   head
     title = content_for?(:title) ? yield(:title) : 'GitHub Quality'
+    meta charset="utf-8"
     meta name="viewport" content="width=device-width, initial-scale=1"
     meta name="theme-color" content="#0B111D"
-    meta name="description" content="GitHub Quality — repository analysis and code-quality reports"
+    meta name="color-scheme" content="dark"
+    meta name="description" content=t('gq_meta.description')
+    meta name="robots" content=(current_user ? 'noindex,nofollow' : 'index,follow')
+    meta property="og:type" content="website"
+    meta property="og:site_name" content="GitHub Quality"
+    meta property="og:title" content="GitHub Quality — Repository Diagnostics"
+    meta property="og:description" content=t('gq_meta.description')
+    meta property="og:url" content=(request.base_url + '/')
+    meta property="og:image" content=(request.base_url + '/og-image.png')
+    meta property="og:image:width" content="1200"
+    meta property="og:image:height" content="630"
+    meta property="og:image:alt" content="GitHub Quality repository analysis preview"
+    meta property="og:locale" content=(I18n.locale == :ru ? 'ru_RU' : 'en_US')
+    meta name="twitter:card" content="summary_large_image"
+    meta name="twitter:image" content=(request.base_url + '/og-image.png')
 
     = csrf_meta_tags
     = csp_meta_tag
 
     = yield :head
 
-    link rel="icon" href="/icon.svg" type="image/svg+xml"
+    link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any"
+    link rel="alternate icon" href="/favicon.ico"
+    link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180"
+    link rel="manifest" href="/site.webmanifest"
 
     = stylesheet_link_tag 'application', 'data-turbo-track': 'reload'
     = javascript_include_tag 'application', 'data-turbo-track': 'reload', type: 'module'
