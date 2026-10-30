@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   scope module: :web do
     root 'home#index'
 
+    post '/language/:locale', to: 'languages#update', as: :language
+
     get  '/auth/failure',            to: 'auth#failure', as: :auth_failure
     post '/auth/:provider',          to: 'auth#request', as: :auth_request
     get  '/auth/:provider/callback', to: 'auth#create',  as: :callback_auth

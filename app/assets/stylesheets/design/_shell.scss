@@ -235,3 +235,41 @@
   .gq-brand__wordmark { font-size: 16px; }
   .gq-footer__attribution { margin-left: 0; }
 }
+
+.gq-locale {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--gq-border);
+  border-radius: var(--gq-radius-sm);
+}
+
+.gq-locale__form {
+  margin: 0;
+}
+
+.gq-locale__button {
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--gq-muted);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.gq-locale__button:hover {
+  color: var(--gq-text);
+}
+
+.gq-locale__button.is-active {
+  background: var(--gq-surface-raised);
+  color: var(--gq-accent);
+}
+
+.gq-mobile-menu__panel .gq-locale {
+  justify-content: center;
+  margin: 5px 8px 10px;
+}

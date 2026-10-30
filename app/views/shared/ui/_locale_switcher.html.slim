@@ -1,0 +1,8 @@
+.gq-locale role="group" aria-label=t('gq_language.label')
+  - %w[ru en].each do |code|
+    = button_to code.upcase,
+                language_path(locale: code),
+                method: :post,
+                class: "gq-locale__button#{' is-active' if I18n.locale.to_s == code}",
+                form: { class: 'gq-locale__form' },
+                aria: { pressed: I18n.locale.to_s == code, label: t("gq_language.#{code}") }

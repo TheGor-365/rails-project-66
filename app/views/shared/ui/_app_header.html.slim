@@ -16,6 +16,7 @@ header.gq-header
       = link_to t('views_i18n.app.nav.repositories'), repositories_path, class: "gq-header__link#{' is-active' if request.path.start_with?('/repositories')}", aria: { current: ('page' if request.path.start_with?('/repositories')) }
 
     .gq-header__account
+      = render 'shared/ui/locale_switcher'
       - if current_user
         span.gq-user
           - if current_user.image_url.present?
@@ -31,6 +32,7 @@ header.gq-header
       summary.gq-mobile-menu__trigger aria-label="Menu"
         i.bi.bi-list aria-hidden="true"
       nav.gq-mobile-menu__panel aria-label="Mobile navigation"
+        = render 'shared/ui/locale_switcher'
         = link_to t('views_i18n.app.nav.home'), root_path, class: 'gq-mobile-menu__link'
         = link_to t('views_i18n.app.nav.repositories'), repositories_path, class: 'gq-mobile-menu__link'
         - if current_user
