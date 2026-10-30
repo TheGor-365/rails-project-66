@@ -1,3 +1,6 @@
-<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg">
-  <rect width="100%" height="100%" fill="red"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="GitHub Quality">
+<defs><linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#B3C9FF"/><stop offset="1" stop-color="#719AF8"/></linearGradient></defs>
+<rect width="64" height="64" rx="15" fill="#0B111D"/>
+<path d="M32 7 57 32 32 57 7 32Z" fill="url(#a)"/>
+<path d="m27 22-10 10 10 10M37 22l10 10-10 10m-2-21-6 22" stroke="#0B182D" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
 </svg>

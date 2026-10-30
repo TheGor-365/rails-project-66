@@ -1,66 +1,48 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="ru">
 <head>
-  <title>We're sorry, but something went wrong (500)</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0B111D">
+  <meta name="robots" content="noindex,nofollow">
+  <title>500 — GitHub Quality</title>
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
   <style>
-  .rails-default-error-page {
-    background-color: #EFEFEF;
-    color: #2E2F30;
-    text-align: center;
-    font-family: arial, sans-serif;
-    margin: 0;
-  }
-
-  .rails-default-error-page div.dialog {
-    width: 95%;
-    max-width: 33em;
-    margin: 4em auto 0;
-  }
-
-  .rails-default-error-page div.dialog > div {
-    border: 1px solid #CCC;
-    border-right-color: #999;
-    border-left-color: #999;
-    border-bottom-color: #BBB;
-    border-top: #B00100 solid 4px;
-    border-top-left-radius: 9px;
-    border-top-right-radius: 9px;
-    background-color: white;
-    padding: 7px 12% 0;
-    box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-  }
-
-  .rails-default-error-page h1 {
-    font-size: 100%;
-    color: #730E15;
-    line-height: 1.5em;
-  }
-
-  .rails-default-error-page div.dialog > p {
-    margin: 0 0 1em;
-    padding: 1em;
-    background-color: #F7F7F7;
-    border: 1px solid #CCC;
-    border-right-color: #999;
-    border-left-color: #999;
-    border-bottom-color: #999;
-    border-bottom-left-radius: 4px;
-    border-bottom-right-radius: 4px;
-    border-top-color: #DADADA;
-    color: #666;
-    box-shadow: 0 3px 8px rgba(50, 50, 50, 0.17);
-  }
-  </style>
+  :root{color-scheme:dark}
+  *{box-sizing:border-box}
+  body{margin:0;background:#0b111d;color:#f1f5fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh;line-height:1.6;-webkit-font-smoothing:antialiased}
+  a{color:#8aafff;text-underline-offset:4px}
+  a:focus-visible{outline:2px solid #8aafff;outline-offset:4px}
+  .shell{max-width:1050px;margin:0 auto;padding:32px clamp(20px,4vw,48px)}
+  .brand{display:inline-flex;align-items:center;gap:12px;text-decoration:none;color:#f1f5fb;font-weight:720;letter-spacing:-.035em;font-size:17px}
+  .logo{display:grid;place-items:center;width:38px;height:38px;background:#8aafff;border-radius:10px;color:#0b111d;font-weight:850;font-size:12px}
+  .brand span strong{color:#8aafff}
+  main{padding:clamp(65px,11vh,120px) 0}
+  .eyebrow{font-size:12px;color:#8aafff;letter-spacing:.15em;font-weight:780}
+  .panel{border:1px solid #253244;background:#121d2b;border-radius:16px;padding:clamp(26px,5vw,56px);max-width:740px}
+  h1{font-size:clamp(31px,5vw,54px);line-height:1.13;letter-spacing:-.045em;margin:12px 0 14px}
+  .lede{font-size:17px;color:#a1aec0;margin:0 0 22px;max-width:53ch}
+  .en{border-top:1px solid #253244;margin:24px 0 0;padding-top:20px;color:#a1aec0;font-size:14px;max-width:60ch}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;border-radius:8px;padding:11px 18px;text-decoration:none;background:#8aafff;color:#081423;font-weight:720;font-size:13px;border:1px solid #8aafff}
+  .btn:hover{background:#aec8ff;color:#081423}
+  .foot{font-size:12px;color:#73849b;border-top:1px solid #253244;padding-top:20px}
+  @media (max-width:480px){.shell{padding:22px 16px}.panel{padding:26px 19px}}
+</style>
 </head>
-
-<body class="rails-default-error-page">
-  <!-- This file lives in public/500.html -->
-  <div class="dialog">
-    <div>
-      <h1>We're sorry, but something went wrong.</h1>
-    </div>
-    <p>If you are the application owner check the logs for more information.</p>
+<body>
+  <div class="shell">
+    <header><a class="brand" href="/" aria-label="GitHub Quality — главная"><span class="logo" aria-hidden="true">GQ</span><span>GitHub <strong>Quality</strong></span></a></header>
+    <main id="main">
+      <div class="panel">
+        <div class="eyebrow">500 / SERVER ERROR</div>
+        <h1>Временная ошибка сервиса</h1>
+        <p class="lede">Приложение столкнулось с ошибкой. Попробуйте открыть страницу немного позже.</p>
+        <p class="en" lang="en"><strong>Something went wrong on our side.</strong> Please try again later. This message does not contain private diagnostic details.</p>
+        <div class="actions"><a class="btn" href="/">На главную / Home</a></div>
+      </div>
+    </main>
+    <footer class="foot">GitHub Quality · Repository diagnostics</footer>
   </div>
 </body>
 </html>
