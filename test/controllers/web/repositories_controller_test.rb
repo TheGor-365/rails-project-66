@@ -100,5 +100,7 @@ class Web::RepositoriesControllerTest < ActionDispatch::IntegrationTest
     get repository_path(repo2)
 
     assert_response :not_found
+    assert_select 'h1', text: 'Страница не найдена'
+    assert_select 'a[href="/"]', text: /На главную/
   end
 end

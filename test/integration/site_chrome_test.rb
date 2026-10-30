@@ -9,8 +9,11 @@ class SiteChromeTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select 'meta[property="og:image"][content$="/og-image.png"]', count: 1
     assert_select 'meta[name="twitter:card"][content="summary_large_image"]', count: 1
-    assert_select 'link[rel="icon"][href="/icon.svg"]', count: 1
+    assert_select 'link[rel="icon"][href="/gq-brand-v2.svg"]', count: 1
     assert_select 'link[rel="manifest"][href="/site.webmanifest"]', count: 1
+    assert_select 'link[rel="icon"][href="/gq-brand-v2.ico"]', count: 1
+    assert Rails.root.join('public/gq-brand-v2.ico').file?
+    assert Rails.root.join('public/gq-brand-v2.png').file?
   end
 
   test 'static error pages use branded dark surfaces and do not leak traces' do

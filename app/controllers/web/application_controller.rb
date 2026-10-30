@@ -20,7 +20,7 @@ module Web
     end
 
     def not_found
-      head :not_found
+      render file: Rails.root.join('public/404.html'), layout: false, status: :not_found, content_type: 'text/html'
     end
   end
 end
