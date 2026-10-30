@@ -1,24 +1,35 @@
-.mt-4.mb-5.pb-5
-  .container
-    .p-4.align-items-center.border.shadow.bg-white.rounded-3
-      .mb-4
-        h1 = t('views_i18n.repositories.index.title')
+.gq-page
+  header.gq-page-heading
+    .gq-page-heading__copy
+      p.gq-eyebrow = t('gq_ui.common.workspace')
+      h1.gq-page__title = t('views_i18n.repositories.index.title')
+      p.gq-page__lede = t('gq_ui.repositories.intro')
+    = link_to new_repository_path, class: 'gq-button' do
+      i.bi.bi-plus-lg aria-hidden="true"
+      = t('views_i18n.repositories.index.add')
 
-      = link_to t('views_i18n.repositories.index.add'), new_repository_path, class: 'btn btn-primary'
-
-      table.table.table-striped.table-hover.mt-4
-        thead
-          tr
-            th scope="col" = t('views_i18n.repositories.index.table.name')
-            th scope="col" = t('views_i18n.repositories.index.table.language')
-            th scope="col" = t('views_i18n.repositories.index.table.last_check_status')
-        tbody
-          - @repositories.each do |repository|
-            tr
-              td = link_to repository.full_name, repository_path(repository)
-              td = repository.language_text
-              td
-                - if repository.last_check.present?
-                  = check_status_text(repository.last_check)
-                - else
-                  | —
+  - if @repositories.any?
+    section.gq-panel.gq-table-panel aria-label=t('views_i18n.repositories.index.title')
+      .gq-table-panel__heading
+        span = t('gq_ui.repositories.connected')
+        span.gq-count = @repositories.size
+      .gq-repo-list
+        - @repositories.each do |repository|
+          = link_to repository_path(repository), class: 'gq-repo-list__item' do
+            span.gq-repo-list__icon
+              i.bi.bi-github aria-hidden="true"
+            span.gq-repo-list__description
+              strong.gq-break-anywhere = repository.full_name
+              small = repository.language_text
+            span.gq-repo-list__status
+              - if repository.last_check.present?
+                = render 'shared/ui/check_status', check: repository.last_check
+              - else
+                span.gq-status = t('gq_ui.common.no_checks')
+            i.bi.bi-arrow-up-right.gq-repo-list__arrow aria-hidden="true"
+  - else
+    section.gq-panel.gq-empty
+      i.bi.bi-folder2-open.gq-empty__icon aria-hidden="true"
+      h2 = t('gq_ui.repositories.empty_title')
+      p = t('gq_ui.repositories.empty_body')
+      = link_to t('views_i18n.repositories.index.add'), new_repository_path, class: 'gq-button'

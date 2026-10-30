@@ -17,6 +17,8 @@ end
 module RailsProject66
   class Application < Rails::Application
     config.load_defaults 7.2
+    config.i18n.default_locale = :ru
+    config.i18n.available_locales = %i[ru en]
     config.autoload_lib(ignore: %w[assets tasks])
 
     routes.default_url_options = {

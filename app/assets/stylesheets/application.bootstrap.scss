@@ -1,2 +1,11 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+// GitHub Quality: one global visual foundation, not per-page overrides.
+@import 'design/tokens';
+@import 'design/foundation';
+@import 'design/shell';
+@import 'design/components';
+@import 'design/motion';
+
+@import 'pages/workspace';
